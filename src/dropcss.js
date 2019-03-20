@@ -49,9 +49,16 @@ function dropcss(opts) {
 			else
 				node.prelude.value = pre.join(", ");
 		}
+
+	//	if (node.type == "Atrule")
+	//		console.log(node.block.children.isEmpty());
 	});
 
-	return csstree.generate(cssAst);
+	return (
+		csstree.generate(cssAst)
+		// hack to remove leftover/empty @media queries until i can figure out how to prune them from cssAst
+		.replace(/@media\s*\([^\)]+\)\s*\{\}/gm, '')
+	);
 }
 
 module.exports = dropcss;
