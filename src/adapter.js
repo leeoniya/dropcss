@@ -56,7 +56,7 @@ var adapter = {
 	getParent: getParent,
 	getAttributeValue: function(elem, name){
 		if(elem.attributes && elem.attributes[name]){
-			return elem.attributes[name].value;
+			return elem.attributes[name];
 		} else if (name === "class" && elem.classList) {
 			return Array.from(elem.classList).join(" ");
 		}
