@@ -1,0 +1,30 @@
+{
+  "name": "dropcss",
+  "version": "0.1.0",
+  "description": "Unused CSS Cleaner",
+  "main": "./src/dropcss.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leon Sorokin <leeoniya@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "package.json",
+    "README.md",
+    "LICENSE",
+    "src"
+  ],
+  "homepage": "https://github.com/leeoniya/dropcss",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leeoniya/dropcss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leeoniya/dropcss/issues"
+  },
+  "dependencies": {
+    "css-select": "^2.0.2",
+    "css-tree": "^1.0.0-alpha.29",
+    "he": "^1.2.0"
+  }
+}
