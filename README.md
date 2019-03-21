@@ -169,7 +169,6 @@ DropCSS stands on the shoulders of giants.
 ---
 ### TODO
 
-- Remove unused keyframe defs
 - See if any perf can be gained. Run a profile and maybe cache result of querySelector for identical selectors encountered across multiple @media blocks.
 - (Internal) figure out how to properly prune empty @media query block nodes from the AST instead of doing a regex replace on the output.
 
