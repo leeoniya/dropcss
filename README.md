@@ -165,6 +165,7 @@ DropCSS stands on the shoulders of giants.
 
 - Not tested against malformed HTML (the underlying Fast HTML Parser claims to support common cases but not all)
 - Not tested against malformed CSS (the underlying CSSTree parser claims to be "Tolerant to errors by design")
+- There is no processing or execution of `<script>` tags; your HTML must be fully formed (or SSR'd). You should generate and append any additional HTML that you'd want to be considered by DropCSS. If you need JS execution, consider using the larger, slower but still good output, `UnCSS`. Alternatively, [Puppeteer can now output coverage reports](https://www.philkrie.me/2018/07/04/extracting-coverage.html), and there might be tools that utilize this coverage data to clean your CSS, too. DropCSS aims to be minimal, simple and effective.
 
 ---
 ### TODO
