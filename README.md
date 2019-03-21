@@ -159,7 +159,7 @@ DropCSS stands on the shoulders of giants.
 - Purgecss is fast but has no support for removing attribute selectors [Issue #110](https://github.com/FullHuman/purgecss/issues/110), and maybe other stuff.
 
 ---
-### DropCSS Caveats
+### Caveats
 
 - Not tested against malformed HTML (the underlying Fast HTML Parser claims to support common cases but not all)
 - Not tested against malformed CSS (the underlying CSSTree parser claims to be "Tolerant to errors by design")
