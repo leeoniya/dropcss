@@ -17,7 +17,7 @@ The entire logic for DropCSS is this [~60 line file](https://github.com/leeoniya
 ### Install
 
 ```
-npm install --save-dev dropcss
+npm install -D dropcss
 ```
 
 ---
@@ -45,16 +45,27 @@ let css = `
     }
 `;
 
+const whitelist = /\b(?:#foo|\.bar)\b/;
+
+let dropped = new Set();
+
 let cleansedCSS = dropcss({
     html,
     css,
-    keep: (sel) => {
-        // test selector against some whitelist
-        // and return `true` to retain it
-        return /#foo/.test(sel);
+    shouldDrop: (sel) => {
+        if (whitelist.test(sel))
+            return false;
+        else {
+            dropped.add(sel);
+            return true;
+        }
     },
 })
 ```
+
+`shouldDrop` is called for every CSS selector that could not be matched in the `html`.
+Return `false` to retain it or `true` to drop it.
+Additionally, this callback can be used to log all removed selectors.
 
 ---
 ### Features

@@ -6,6 +6,8 @@ const adapter = require("./adapter");
 // https://developer.mozilla.org/en-US/docs/Web/CSS/pseudo-classes
 const pseudoClassNonTransient = /:(?:first|last|nth|only|not|empty)\b/;		// |lang
 
+const doDrop = sel => true;
+
 function dropcss(opts) {
 	const htmlAst = parse(opts.html);
 
@@ -15,7 +17,7 @@ function dropcss(opts) {
 		parseAtrulePrelude: false
 	});
 
-	const keep = opts.keep || (() => false);
+	const shouldDrop = opts.shouldDrop || doDrop;
 
 	csstree.walk(cssAst, function(node, item, list) {
 		if (node.type == "Rule") {
@@ -33,7 +35,7 @@ function dropcss(opts) {
 				// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
 				.replace(/:[a-z-]+\(\)/gm, '');
 
-				if (domSel == '' || CSSselect.selectOne(domSel, htmlAst.childNodes, {adapter}) || keep(sel))
+				if (domSel == '' || CSSselect.selectOne(domSel, htmlAst.childNodes, {adapter}) || shouldDrop(sel) !== true)
 					pre.push(sel);
 			});
 
