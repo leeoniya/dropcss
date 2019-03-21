@@ -85,7 +85,7 @@ let cleansedCSS = dropcss({
     </thead>
     <tbody>
         <tr>
-            <th><a href="https://github.com/leeoniya/dropcss">DropCSS</a></th>
+            <th><strong>DropCSS</strong></th>
             <td>
                 2.06 MB<br>
                 244 Files, 47 Folders
