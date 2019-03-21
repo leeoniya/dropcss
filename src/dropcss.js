@@ -26,20 +26,15 @@ function dropcss(opts) {
 			node.prelude.value.split(",").forEach((sel) => {
 				sel = sel.trim();
 
-				if (keep(sel))
+				// strip pseudo-elements and transient pseudo-classes
+				let domSel = sel.replace(/:?:[a-z-]+/gm, (m) =>
+					sel.startsWith('::') || !pseudoClassNonTransient.test(m) ? '' : m
+				)
+				// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
+				.replace(/:[a-z-]+\(\)/gm, '');
+
+				if (domSel == '' || CSSselect.selectOne(domSel, htmlAst.childNodes, {adapter}) || keep(sel))
 					pre.push(sel);
-				else {
-					// strip pseudo-elements and transient pseudo-classes
-					let domSel = sel.replace(/:?:[a-z-]+/gm, (m) =>
-						sel.startsWith('::') || !pseudoClassNonTransient.test(m) ? '' : m
-					)
-					// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
-					.replace(/:[a-z-]+\(\)/gm, '');
-
-					if (domSel == '' || CSSselect.selectOne(domSel, htmlAst.childNodes, {adapter}))
-						pre.push(sel);
-				}
-
 			});
 
 			if (pre.length == 0)
