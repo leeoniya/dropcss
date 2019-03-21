@@ -49,7 +49,8 @@ const whitelist = /\b(?:#foo|\.bar)\b/;
 
 let dropped = new Set();
 
-let cleansedCSS = dropcss({
+// returns a string
+let cleanCSS = dropcss({
     html,
     css,
     shouldDrop: (sel) => {
@@ -60,7 +61,11 @@ let cleansedCSS = dropcss({
             return true;
         }
     },
-})
+});
+
+console.log(cleanCSS);
+
+console.log(dropped);
 ```
 
 `shouldDrop` is called for every CSS selector that could not be matched in the `html`.
