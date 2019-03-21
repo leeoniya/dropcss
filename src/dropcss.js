@@ -1,9 +1,7 @@
-const { parse } = require('./node-html-parser');
+const { parse } = require('node-html-parser');
 const csstree = require('css-tree');
 const CSSselect = require("css-select");
 const adapter = require("./adapter");
-
-// TODO: remove empty media query blocks, test with keyframes
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/pseudo-classes
 const pseudoClassNonTransient = /:(?:first|last|nth|only|not|empty)\b/;		// |lang
@@ -49,9 +47,6 @@ function dropcss(opts) {
 			else
 				node.prelude.value = pre.join(", ");
 		}
-
-	//	if (node.type == "Atrule")
-	//		console.log(node.block.children.isEmpty());
 	});
 
 	return (

@@ -1,5 +1,5 @@
 {
-  "name": "dropcss",
+  "name": "DropCSS",
   "version": "0.1.0",
   "description": "Unused CSS Cleaner",
   "main": "./src/dropcss.js",
@@ -25,6 +25,6 @@
   "dependencies": {
     "css-select": "^2.0.2",
     "css-tree": "^1.0.0-alpha.29",
-    "he": "^1.2.0"
+    "node-html-parser": "^1.1.13"
   }
 }
