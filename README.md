@@ -5,7 +5,7 @@ A simple, thorough and fast unused-CSS cleaner _(MIT Licensed)_
 ---
 ### Introduction
 
-DropCSS is an unused CSS cleaner that's just some clever & minimal glue between these awesome low-level tools:
+DropCSS is an unused CSS cleaner. It's simply some minimal glue between these awesome low-level tools:
 
 - [Fast HTML Parser](https://github.com/taoqf/node-html-parser)
 - [CSSTree](https://github.com/csstree/csstree)
