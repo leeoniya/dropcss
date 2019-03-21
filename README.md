@@ -96,8 +96,8 @@ DropCSS stands on the shoulders of giants.
         <tr>
             <th><strong>DropCSS</strong></th>
             <td>
-                2.06 MB<br>
-                244 Files, 47 Folders
+                2.16 MB<br>
+                251 Files, 51 Folders
             </td>
             <td>6.67 KB</td>
             <td>195ms</td>
