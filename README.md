@@ -37,13 +37,13 @@ let css = `
 `;
 
 let cleansedCSS = dropcss({
+    html,
     css,
-	html,
-	keep: (sel) => {
-		// test selector against some whitelist
-		// and return `true` to retain it
-		return /#foo/.test(sel);
-	},
+    keep: (sel) => {
+        // test selector against some whitelist
+        // and return `true` to retain it
+        return /#foo/.test(sel);
+    },
 })
 ```
 
@@ -65,57 +65,57 @@ let cleansedCSS = dropcss({
 #### Output
 
 <table>
-	<thead>
-		<tr>
-			<th></th>
-			<th>npm -i</th>
-			<th>output size</th>
-			<th>time elapsed</th>
-			<th>unused bytes (test.html coverage)</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<th><a href="https://github.com/leeoniya/dropcss">DropCSS</a></th>
-			<td>
-				2.06 MB<br>
-				244 Files, 47 Folders
-			</td>
-			<td>6.67 KB</td>
-			<td>195ms</td>
-			<td>575 / 8.5%</td>
-		</tr>
-		<tr>
-			<th><a href="https://github.com/uncss/uncss">UnCSS</a></th>
-			<td>
-				13.7 MB<br>
-				2,831 Files, 301 Folders
-			</td>
-			<td>6.72 KB</td>
-			<td>424ms</td>
-			<td>730 / 10.6%</td>
-		</tr>
-		<tr>
-			<th><a href="https://github.com/FullHuman/purgecss">Purgecss</a></th>
-			<td>
-				2.53 MB<br>
-				513 Files, 110 Folders
-			</td>
-			<td>8.01 KB</td>
-			<td>79ms</td>
-			<td>1,898 / 23.1%</td>
-		</tr>
-		<tr>
-			<th><a href="https://github.com/purifycss/purifycss">PurifyCSS</a></th>
-			<td>
-				3.45 MB<br>
-				791 Files, 207 Folders
-			</td>
-			<td>15.4 KB</td>
-			<td>186ms</td>
-			<td>9,532 / 60.2%</td>
-		</tr>
-	</tbody>
+    <thead>
+        <tr>
+            <th></th>
+            <th>npm -i</th>
+            <th>output size</th>
+            <th>time elapsed</th>
+            <th>unused bytes (test.html coverage)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th><a href="https://github.com/leeoniya/dropcss">DropCSS</a></th>
+            <td>
+                2.06 MB<br>
+                244 Files, 47 Folders
+            </td>
+            <td>6.67 KB</td>
+            <td>195ms</td>
+            <td>575 / 8.5%</td>
+        </tr>
+        <tr>
+            <th><a href="https://github.com/uncss/uncss">UnCSS</a></th>
+            <td>
+                13.7 MB<br>
+                2,831 Files, 301 Folders
+            </td>
+            <td>6.72 KB</td>
+            <td>424ms</td>
+            <td>730 / 10.6%</td>
+        </tr>
+        <tr>
+            <th><a href="https://github.com/FullHuman/purgecss">Purgecss</a></th>
+            <td>
+                2.53 MB<br>
+                513 Files, 110 Folders
+            </td>
+            <td>8.01 KB</td>
+            <td>79ms</td>
+            <td>1,898 / 23.1%</td>
+        </tr>
+        <tr>
+            <th><a href="https://github.com/purifycss/purifycss">PurifyCSS</a></th>
+            <td>
+                3.45 MB<br>
+                791 Files, 207 Folders
+            </td>
+            <td>15.4 KB</td>
+            <td>186ms</td>
+            <td>9,532 / 60.2%</td>
+        </tr>
+    </tbody>
 </table>
 
 **Notes**
