@@ -11,7 +11,7 @@ DropCSS is an unused CSS cleaner. It's simply some minimal glue between these aw
 - [CSSTree](https://github.com/csstree/csstree)
 - [css-select](https://github.com/fb55/css-select)
 
-The entire logic for DropCSS is this [~75 line file](https://github.com/leeoniya/dropcss/blob/master/src/dropcss.js).
+The entire logic for DropCSS is this [~60 line file](https://github.com/leeoniya/dropcss/blob/master/src/dropcss.js).
 
 ---
 ### Install
@@ -55,6 +55,15 @@ let cleansedCSS = dropcss({
     },
 })
 ```
+
+---
+### Features
+
+DropCSS stands on the shoulders of giants.
+
+- Due to the exhaustive selector support of `css-select`, it properly supports testing for and removing of practically all conceivable selectors: https://github.com/fb55/css-select#supported-selectors.
+- CSSTree easily parses media queries, so they are transparently processed and removed like all other blocks with no special handling required.
+- DropCSS avoids removing any transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
 
 ---
 ### Performance
