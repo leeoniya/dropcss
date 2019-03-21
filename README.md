@@ -13,6 +13,8 @@ DropCSS is an unused CSS cleaner. It's simply some minimal glue between these aw
 
 The entire logic for DropCSS is this [~60 line file](https://github.com/leeoniya/dropcss/blob/master/src/dropcss.js).
 
+It is recommended to also run your CSS through an optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css) to group, merge and remove redundant rules. Whether this is done before or after DropCSS is up to you, but since `clean-css` can also perform CSS minification, it probably makes sense to run DropCSS first to avoid bouncing [and re-parsing] the output back and forth (optimize & minify -> drop) vs (optimize -> drop -> minify), though this will depend on the actual inputs; profiling is your friend.
+
 ---
 ### Install
 
