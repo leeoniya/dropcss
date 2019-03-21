@@ -14,9 +14,18 @@ DropCSS is an unused CSS cleaner that's just some clever & minimal glue between 
 The entire logic for DropCSS is this [~75 line file](https://github.com/leeoniya/dropcss/blob/master/src/dropcss.js).
 
 ---
+### Install
+
+```
+npm install --save-dev dropcss
+```
+
+---
 ### API
 
 ```js
+const dropcss = require('dropcss');
+
 let html = `
     <html>
         <head></head>
@@ -68,7 +77,7 @@ let cleansedCSS = dropcss({
     <thead>
         <tr>
             <th></th>
-            <th>npm -i</th>
+            <th>lib size w/deps</th>
             <th>output size</th>
             <th>time elapsed</th>
             <th>unused bytes (test.html coverage)</th>
