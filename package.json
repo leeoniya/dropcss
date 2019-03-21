@@ -1,5 +1,5 @@
 {
-  "name": "DropCSS",
+  "name": "dropcss",
   "version": "0.1.0",
   "description": "Unused CSS Cleaner",
   "main": "./src/dropcss.js",
