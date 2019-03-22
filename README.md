@@ -72,7 +72,7 @@ console.log(dropped);
 
 `shouldDrop` is called for every CSS selector that could not be matched in the `html`.
 Return `false` to retain it or `true` to drop it.
-Additionally, this callback can be used to log all removed selectors.
+Additionally, this hook can be used to log all removed selectors.
 
 ---
 ### Features
