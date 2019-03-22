@@ -1,5 +1,7 @@
 // slightly tweaked version of https://github.com/nrkn/css-select-browser-adapter/blob/master/index.js
 
+const EMPTY_OBJECT = {};
+
 function isTag(elem){
 	return elem.nodeType === 1;
 }
@@ -55,21 +57,19 @@ var adapter = {
 	getChildren: getChildren,
 	getParent: getParent,
 	getAttributeValue: function(elem, name){
-		if(elem.attributes && elem.attributes[name]){
-			return elem.attributes[name];
+		if(elem.attributes && name in elem.attributes){
+			var attr = elem.attributes[name];
+			return typeof attr === "string" ? attr : attr.value;
 		} else if (name === "class" && elem.classList) {
 			return Array.from(elem.classList).join(" ");
 		}
 	},
 	hasAttrib: function(elem, name){
-		return elem.attributes && name in elem.attributes;
+		return name in (elem.attributes || EMPTY_OBJECT);
 	},
 	removeSubsets: removeSubsets,
 	getName: function(elem){
-		if (elem.tagName == null)
-			return null;
-
-		return elem.tagName.toLowerCase();
+		return (elem.tagName || "").toLowerCase();
 	},
 	findOne: function findOne(test, arr){
 		var elem = null;
