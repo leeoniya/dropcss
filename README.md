@@ -117,8 +117,8 @@ DropCSS stands on the shoulders of giants.
                 2.16 MB<br>
                 251 Files, 51 Folders
             </td>
-            <td>6.67 KB</td>
-            <td>195ms</td>
+            <td>6.60 KB</td>
+            <td>180ms</td>
             <td>575 / 8.5%</td>
         </tr>
         <tr>
@@ -128,8 +128,8 @@ DropCSS stands on the shoulders of giants.
                 2,831 Files, 301 Folders
             </td>
             <td>6.72 KB</td>
-            <td>424ms</td>
-            <td>730 / 10.6%</td>
+            <td>429ms</td>
+            <td>638 / 9.3%</td>
         </tr>
         <tr>
             <th><a href="https://github.com/FullHuman/purgecss">Purgecss</a></th>
@@ -138,8 +138,8 @@ DropCSS stands on the shoulders of giants.
                 513 Files, 110 Folders
             </td>
             <td>8.01 KB</td>
-            <td>79ms</td>
-            <td>1,898 / 23.1%</td>
+            <td>78ms</td>
+            <td>1,806 / 22.0%</td>
         </tr>
         <tr>
             <th><a href="https://github.com/purifycss/purifycss">PurifyCSS</a></th>
@@ -149,7 +149,7 @@ DropCSS stands on the shoulders of giants.
             </td>
             <td>15.4 KB</td>
             <td>186ms</td>
-            <td>9,532 / 60.2%</td>
+            <td>9,440 / 59.6%</td>
         </tr>
     </tbody>
 </table>
