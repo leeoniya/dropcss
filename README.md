@@ -1,4 +1,4 @@
-## DropCSS
+## 🗑 DropCSS
 
 A simple, thorough and fast unused-CSS cleaner _(MIT Licensed)_
 
