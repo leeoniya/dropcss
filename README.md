@@ -122,7 +122,7 @@ DropCSS stands on the shoulders of giants.
             </td>
             <td>6.60 KB</td>
             <td>76.15%</td>
-            <td>180ms</td>
+            <td>175ms</td>
             <td>575 / 8.5%</td>
         </tr>
         <tr>

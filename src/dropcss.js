@@ -19,8 +19,9 @@ function dropcss(opts) {
 
 	const shouldDrop = opts.shouldDrop || doDrop;
 
-	csstree.walk(cssAst, function(node, item, list) {
-		if (node.type == "Rule") {
+	csstree.walk(cssAst, {
+		visit: 'Rule',
+		enter: (node, item, list) => {
 			var pre = [];
 
 			// TOFIX: splitting on comma can break :is(p, a)/:matches()/:not(p, a)
