@@ -49,12 +49,12 @@ let css = `
     }
 `;
 
-const whitelist = /\b(?:#foo|\.bar)\b/;
+const whitelist = /#foo|\.bar/;
 
 let dropped = new Set();
 
-// returns a string
-let cleanCSS = dropcss({
+// returns { css }
+let cleaned = dropcss({
     html,
     css,
     shouldDrop: (sel) => {
@@ -67,7 +67,7 @@ let cleanCSS = dropcss({
     },
 });
 
-console.log(cleanCSS);
+console.log(cleaned.css);
 
 console.log(dropped);
 ```

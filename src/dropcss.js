@@ -1,5 +1,5 @@
 const { parse } = require('node-html-parser');
-const csstree = require('css-tree');
+const CSSTree = require('css-tree');
 const CSSselect = require("css-select");
 const adapter = require("./adapter");
 
@@ -11,7 +11,7 @@ const doDrop = sel => true;
 function dropcss(opts) {
 	const htmlAst = parse(opts.html);
 
-	const cssAst = csstree.parse(opts.css, {
+	const cssAst = CSSTree.parse(opts.css, {
 		parseRulePrelude: false,
 		parseValue: false,
 		parseAtrulePrelude: false
@@ -19,7 +19,7 @@ function dropcss(opts) {
 
 	const shouldDrop = opts.shouldDrop || doDrop;
 
-	csstree.walk(cssAst, {
+	CSSTree.walk(cssAst, {
 		visit: 'Rule',
 		enter: (node, item, list) => {
 			var pre = [];
@@ -47,11 +47,13 @@ function dropcss(opts) {
 		}
 	});
 
-	return (
-		csstree.generate(cssAst)
+	let cleaned = CSSTree.generate(cssAst)
 		// hack to remove leftover/empty @media queries until i can figure out how to prune them from cssAst
-		.replace(/@media\s*\([^\)]+\)\s*\{\}/gm, '')
-	);
+		.replace(/@media\s*\([^\)]+\)\s*\{\}/gm, '');
+
+	return {
+		css: cleaned
+	};
 }
 
 module.exports = dropcss;
