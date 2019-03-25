@@ -15,7 +15,7 @@ The entire logic for DropCSS is this [~60 line file](https://github.com/leeoniya
 
 It is recommended to also run your CSS through an optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css) to group selectors, merge and remove redundant rules, purge unused keyframes, etc. Whether this is done before or after DropCSS is up to you, but since `clean-css` also minifies, it probably makes sense to run DropCSS first to avoid bouncing [and re-parsing] the output back and forth (optimize & minify -> drop) vs (optimize -> drop -> minify), though this will likely depend on your actual input; profiling is your friend.
 
-A bit more on this project's backstory in this [Reddit thread](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/).
+A bit more on this project's backstory & discussions in [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/) and on [Hacker News](https://news.ycombinator.com/item?id=19469080).
 
 ---
 ### Installation
