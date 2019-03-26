@@ -74,7 +74,7 @@ console.log(dropped);
 ```
 
 - `shouldDrop` is called for every CSS selector that could not be matched in the `html`. Return `false` to retain it or `true` to drop it. Additionally, this hook can be used to log all removed selectors.
-- `keepText` - By default, DropCSS will remove all text nodes from the HTML before processing further since very few CSS selectors can actually target text. Not having to process text nodes is a significant performance boost. However, a few uncommon pseudo-classes like `:blank` and `:empty` do assert on text nodes. If combined as e.g. `:not(:empty)`, this could result wongful removal, or wrongful retention. Setting `keepText` to `true` will leave all text nodes in place to allow for this to work properly at the expense of performance.
+- `keepText` - By default, DropCSS will remove all text nodes from the HTML before processing further since very few CSS selectors can actually target text. Not having to process text nodes is a significant performance boost. However, a few uncommon pseudo-classes like `:blank` and `:empty` do assert on text nodes. If combined as e.g. `:not(:empty)`, this could result wrongful removal, or wrongful retention of selectors. Setting `keepText` to `true` will leave all text nodes in place to allow for this to work properly at the expense of performance.
 
 ---
 ### Features
