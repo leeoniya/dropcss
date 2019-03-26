@@ -1,7 +1,7 @@
 const { parse } = require('node-html-parser');
 const CSSTree = require('css-tree');
 const CSSselect = require("css-select");
-const adapter = require("./adapter");
+const adapter = require("css-select-browser-adapter");
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/pseudo-classes
 const pseudoClassNonTransient = /:(?:first|last|nth|only|not|empty)\b/;		// |lang

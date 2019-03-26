@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "css-select": "^2.0.2",
+    "css-select-browser-adapter": "^0.1.2",
     "css-tree": "^1.0.0-alpha.29",
     "node-html-parser": "^1.1.13"
   }
