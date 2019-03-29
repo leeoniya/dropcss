@@ -39,8 +39,13 @@ function dropcss(opts) {
 
 	CSSTree.walk(cssAst, {
 		visit: 'Rule',
-		enter: (node, item, list) => {
-			var pre = [];
+		enter: function(node, item, list) {
+			let atRule = this.atrule;
+
+			if (atRule != null && atRule.name != 'media')
+				return;
+
+			let pre = [];
 
 			// TOFIX: splitting on comma can break :is(p, a)/:matches()/:not(p, a)
 			// https://developer.mozilla.org/en-US/docs/Web/CSS/:is
