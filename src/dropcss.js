@@ -4,7 +4,7 @@ const CSSselect = require("css-select");
 const adapter = require("css-select-browser-adapter");
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/pseudo-classes
-const pseudoClassNonTransient = /:(?:first|last|nth|only|not|empty)\b/;		// |lang
+const pseudoClassNonTransient = /^:(?:first|last|nth|only|not|empty)\b/;		// |lang
 
 const doDrop = sel => true;
 
@@ -53,11 +53,20 @@ function dropcss(opts) {
 				sel = sel.trim();
 
 				// strip pseudo-elements and transient pseudo-classes
-				let domSel = sel.replace(/:?:[a-z-]+/gm, (m) =>
-					sel.startsWith('::') || !pseudoClassNonTransient.test(m) ? '' : m
+				// e.g. ::after -> '', :hover -> ''
+				let domSel = sel.replace(/:?:[a-z-]+(?:\([^)]*?\))?/gm, (m) =>
+					m.startsWith('::') || !pseudoClassNonTransient.test(m) ? '' : m
+				)
+				// another pass to remove nested pseudos
+				// e.g. :not(:hover) -> :not()
+				.replace(/\(([^)]+?)\)/gm, (m, m1) =>
+					m1.startsWith('::') || /^(?::active|:focus|:disabled|:hover)$/.test(m1) ? '()' : '(' + m1 + ')'
 				)
 				// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
 				.replace(/:[a-z-]+\(\)/gm, '');
+
+				if (sel.match(/of-type/))
+					console.log([sel, domSel]);
 
 				if (domSel == '' || CSSselect.selectOne(domSel, htmlAst.childNodes, {adapter}) || shouldDrop(sel) !== true)
 					pre.push(sel);
@@ -72,7 +81,7 @@ function dropcss(opts) {
 
 	let cleaned = CSSTree.generate(cssAst)
 		// hack to remove leftover/empty @media queries until i can figure out how to prune them from cssAst
-		.replace(/@media\s*\([^\)]+\)\s*\{\}/gm, '');
+		.replace(/@media\s+[^{]+\{\s*\}/gm, '');
 
 	return {
 		css: cleaned
