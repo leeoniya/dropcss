@@ -1,7 +1,7 @@
 {
   "name": "dropcss",
   "version": "0.5.0-dev",
-  "description": "Unused CSS Cleaner",
+  "description": "An exceptionally fast, thorough and tiny unused-CSS cleaner",
   "main": "./dist/dropcss.cjs.js",
   "scripts": {
     "build": "rollup -c",
@@ -23,7 +23,6 @@
   "bugs": {
     "url": "https://github.com/leeoniya/dropcss/issues"
   },
-  "dependencies": {},
   "devDependencies": {
     "rollup": "^1.9.0",
     "rollup-plugin-buble": "^0.19.6",
