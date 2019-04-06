@@ -1,4 +1,4 @@
-const dropcss = require('../src/dropcss.js');
+const dropcss = require('../../src/dropcss.js');
 const assert = require('assert');
 
 describe('Context-free, multi selector', () => {
