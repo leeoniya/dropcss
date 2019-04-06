@@ -1,19 +1,13 @@
 ## 🗑 DropCSS
 
-A simple, thorough and fast unused-CSS cleaner _(MIT Licensed)_
+An exceptionally fast, thorough and tiny unused-CSS cleaner _(MIT Licensed)_
 
 ---
 ### Introduction
 
-DropCSS is an unused CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. The core is simply some minimal glue between these awesome low-level tools:
+DropCSS is an exceptionally fast, thorough and tiny [~7.5 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thuse avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues), use a previous, larger and slower [0.3.x version](https://github.com/leeoniya/dropcss/releases) that uses heavier but more compliant parsers, or use an alternative CSS cleaner.
 
-- [Fast HTML Parser](https://github.com/taoqf/node-html-parser)
-- [CSSTree](https://github.com/csstree/csstree)
-- [css-select](https://github.com/fb55/css-select)
-
-The entire logic for DropCSS is this [~60 line file](https://github.com/leeoniya/dropcss/blob/master/src/dropcss.js).
-
-It is recommended to also run your CSS through an optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css) to group selectors, merge and remove redundant rules, purge unused keyframes, etc. Whether this is done before or after DropCSS is up to you, but since `clean-css` also minifies, it probably makes sense to run DropCSS first to avoid bouncing [and re-parsing] the output back and forth (optimize & minify -> drop) vs (optimize -> drop -> minify), though this will likely depend on your actual input; profiling is your friend.
+It is recommended to also run your CSS through a structural optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css), [csso](https://github.com/css/csso) or [crass](https://github.com/mattbasta/crass) to group selectors, merge and remove redundant rules, purge unused keyframes, etc.
 
 A bit more on this project's backstory & discussions in [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/) and on [Hacker News](https://news.ycombinator.com/item?id=19469080).
 
@@ -53,37 +47,59 @@ const whitelist = /#foo|\.bar/;
 
 let dropped = new Set();
 
-// returns { css }
 let cleaned = dropcss({
     html,
     css,
     keepText: false,
-    shouldDrop: (sel) => {
-        if (whitelist.test(sel))
-            return false;
-        else {
-            dropped.add(sel);
-            return true;
-        }
-    },
+    shouldKeep: sel => whitelist.test(sel),
 });
 
 console.log(cleaned.css);
-
-console.log(dropped);
 ```
 
-- `shouldDrop` is called for every CSS selector that could not be matched in the `html`. Return `false` to retain it or `true` to drop it. Additionally, this hook can be used to log all removed selectors.
+- `shouldKeep` is called for every CSS selector that could not be matched in the `html`. Return `true` to retain it or `false` to drop it.
 - `keepText` - By default, DropCSS will remove all text nodes from the HTML before processing further since very few CSS selectors can actually target text. Not having to process text nodes is a significant performance boost. However, a few uncommon pseudo-classes like `:blank` and `:empty` do assert on text nodes. If combined as e.g. `:not(:empty)`, this could result wrongful removal, or wrongful retention of selectors. Setting `keepText` to `true` will leave all text nodes in place to allow for this to work properly at the expense of performance.
 
 ---
 ### Features
 
-DropCSS stands on the shoulders of giants.
+- Supported Selectors
 
-- Removal of practically all conceivable selectors is achieved thanks to the exhaustive selector support of `css-select`: https://github.com/fb55/css-select#supported-selectors.
-- CSSTree enables media queries to be transparently processed and removed like all other blocks without special handling.
+  - `*` (universal)
+  - `a` (tag)
+  - `#` (id)
+  - `.` (class)
+  - ` ` (descendant)
+  - `>` (child)
+  - `+` (adjacent sibling)
+  - `~` (general sibling)
+  - `[attr]` (attribute)
+  - `[attr=val]`
+  - `[attr*=val]`
+  - `[attr^=val]`
+  - `[attr$=val]`
+  - `:not()`
+  - `:empty`
+  - `:first-child`
+  - `:last-child`
+  - `:only-child`
+  - `:nth-child()`
+  - `:nth-last-child()`
+
 - Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
+
+---
+### TODO
+
+- Removal of unused @keyframes - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes without much implementation difficulty.
+- Removal of unused @font-face - same as above
+- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). These are pretty easy to implement and good first issue for those interested in contributing:
+  - `:first-of-type`
+  - `:last-of-type`
+  - `:only-of-type`
+  - `:nth-of-type()`
+  - `:nth-last-of-type()`
+  - `:nth-only-of-type()`
 
 ---
 ### Performance
@@ -117,12 +133,12 @@ DropCSS stands on the shoulders of giants.
         <tr>
             <th><strong>DropCSS</strong></th>
             <td>
-                2.16 MB<br>
-                251 Files, 51 Folders
+				52.6 KB<br>
+				6 files, 1 Folders
             </td>
-            <td>6.60 KB</td>
+            <td>6.58 KB</td>
             <td>76.15%</td>
-            <td>138ms</td>
+            <td>20ms</td>
             <td>575 / 8.5%</td>
         </tr>
         <tr>
@@ -133,7 +149,7 @@ DropCSS stands on the shoulders of giants.
             </td>
             <td>6.72 KB</td>
             <td>75.71%</td>
-            <td>429ms</td>
+            <td>409ms</td>
             <td>638 / 9.3%</td>
         </tr>
         <tr>
@@ -144,7 +160,7 @@ DropCSS stands on the shoulders of giants.
             </td>
             <td>8.01 KB</td>
             <td>71.05%</td>
-            <td>78ms</td>
+            <td>79ms</td>
             <td>1,806 / 22.0%</td>
         </tr>
         <tr>
@@ -153,9 +169,9 @@ DropCSS stands on the shoulders of giants.
                 3.45 MB<br>
                 791 Files, 207 Folders
             </td>
-            <td>15.4 KB</td>
+            <td>15.46 KB</td>
             <td>44.34%</td>
-            <td>186ms</td>
+            <td>179ms</td>
             <td>9,440 / 59.6%</td>
         </tr>
     </tbody>
@@ -167,9 +183,16 @@ DropCSS stands on the shoulders of giants.
 - About 175 "unused bytes" are due to vendor-prefixed (-moz, -ms) properties & selectors that are inactive in Chrome, which is used for testing coverage.
 - Purgecss does not support attribute or complex selectors: [Issue #110](https://github.com/FullHuman/purgecss/issues/110).
 
+A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/bench)** is also available.
+
 ---
 ### Caveats
 
-- Not tested against malformed HTML (the underlying Fast HTML Parser claims to support common cases but not all)
-- Not tested against malformed CSS (the underlying CSSTree parser claims to be "Tolerant to errors by design")
+- Not tested against malformed HTML or CSS
 - There is no processing or execution of `<script>` tags; your HTML must be fully formed (or SSR'd). You should generate and append any additional HTML that you'd want to be considered by DropCSS. If you need JS execution, consider using the larger, slower but still good output, `UnCSS`. Alternatively, [Puppeteer can now output coverage reports](https://www.philkrie.me/2018/07/04/extracting-coverage.html), and there might be tools that utilize this coverage data to clean your CSS, too. DropCSS aims to be minimal, simple and effective.
+
+---
+### Acknowledgements
+
+- Felix Böhm's [nth-check](https://github.com/fb55/nth-check) - it's not much code, but getting `An+B` expression testing exactly right is frustrating. I got part-way there before discovering this tiny solution.
+- Vadim Kiryukhin's [vkbeautify](https://github.com/vkiryukhin/vkBeautify) - the benchmark and test code uses this tiny formatter to make it easier to spot differences in output diffs.

@@ -1,9 +1,10 @@
 {
   "name": "dropcss",
-  "version": "0.3.2",
+  "version": "0.5.0-dev",
   "description": "Unused CSS Cleaner",
-  "main": "./src/dropcss.js",
+  "main": "./dist/dropcss.cjs.js",
   "scripts": {
+    "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Leon Sorokin <leeoniya@gmail.com>",
@@ -12,7 +13,7 @@
     "package.json",
     "README.md",
     "LICENSE",
-    "src"
+    "dist"
   ],
   "homepage": "https://github.com/leeoniya/dropcss",
   "repository": {
@@ -22,10 +23,11 @@
   "bugs": {
     "url": "https://github.com/leeoniya/dropcss/issues"
   },
-  "dependencies": {
-    "css-select": "^2.0.2",
-    "css-select-browser-adapter": "^0.1.2",
-    "css-tree": "^1.0.0-alpha.29",
-    "node-html-parser": "^1.1.13"
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^1.9.0",
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-terser": "^4.0.4"
   }
 }
