@@ -85,23 +85,6 @@ console.log(cleaned.css);
   - `:nth-last-child()`
 
 ---
-### TODO
-
-- Removal of unused `@keyframes` and `@font-face` - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
-- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
-  - `:first-of-type`
-  - `:last-of-type`
-  - `:only-of-type`
-  - `:nth-of-type()`
-  - `:nth-last-of-type()`
-  - `:nth-only-of-type()`
-
-Both of these are pretty easy to implement and a good first issues for those interested in contributing.
-
-- Moar tests. Hundreds of additional, granular tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are tested is optimized to fast-path many things; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually just short circuit early if any of (`.foo`, `ul`, `p`) are missing from the dom, and will never continue to structural/context or negation testing. Tests must be carefully written to ensure they hit all the desired paths, which brings us to the next point...
-- Coverage of test code - this is also a challenge since it's impossible to exhaustively exercise the parsers because regex's cannot be exhaustively validated. We can only validate that the tokenizers do the "right thing" on pre-defined well-formed inputs. It might be helpful to write a fuzzer to find issues, but this is not a quick task.
-
----
 ### Performance
 
 #### Input
@@ -184,6 +167,23 @@ Both of these are pretty easy to implement and a good first issues for those int
 - Purgecss does not support attribute or complex selectors: [Issue #110](https://github.com/FullHuman/purgecss/issues/110).
 
 A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/bench)** is also available.
+
+---
+### TODO
+
+- Removal of unused `@keyframes` and `@font-face` - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
+- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
+  - `:first-of-type`
+  - `:last-of-type`
+  - `:only-of-type`
+  - `:nth-of-type()`
+  - `:nth-last-of-type()`
+  - `:nth-only-of-type()`
+
+Both of these are pretty easy to implement and a good first issues for those interested in contributing.
+
+- Moar tests. Hundreds of additional, granular tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are tested is optimized to fast-path many things; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually just short circuit early if any of (`.foo`, `ul`, `p`) are missing from the dom, and will never continue to structural/context or negation testing. Tests must be carefully written to ensure they hit all the desired paths, which brings us to the next point...
+- Coverage of test code - this is also a challenge since it's impossible to exhaustively exercise the parsers because regex's cannot be exhaustively validated. We can only validate that the tokenizers do the "right thing" on pre-defined well-formed inputs. It might be helpful to write a fuzzer to find issues, but this is not a quick task.
 
 ---
 ### Caveats
