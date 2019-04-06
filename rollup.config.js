@@ -56,7 +56,7 @@ export default [
 			name: 'dropcss',
 			file: './dist/dropcss.min.js',
 			format: 'umd',
-			banner: "// " + urlVer,
+			banner: "/*! " + urlVer + " */",
 		},
 		plugins: [
 			commonjs(),
@@ -65,7 +65,7 @@ export default [
 			}),
 			terser({
 				output: {
-					comments: "some"
+					comments: /^!/
 				}
 			}),
 		]

@@ -3,7 +3,7 @@
 * All rights reserved. (MIT Licensed)
 *
 * dropcss.js (DropCSS)
-* A simple, thorough and fast unused-CSS cleaner
+* An exceptionally fast, thorough and tiny unused-CSS cleaner
 * https://github.com/leeoniya/dropcss (v0.5.0-dev)
 */
 
