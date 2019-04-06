@@ -61,6 +61,7 @@ console.log(cleaned.css);
 ---
 ### Features
 
+- Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
 - Supported Selectors
 
   - `*` (universal)
@@ -84,12 +85,10 @@ console.log(cleaned.css);
   - `:nth-child()`
   - `:nth-last-child()`
 
-- Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
-
 ---
 ### TODO
 
-- Removal of unused @keyframes and @font-face - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
+- Removal of unused `@keyframes` and `@font-face` - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
 - All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
   - `:first-of-type`
   - `:last-of-type`
@@ -187,7 +186,8 @@ A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/benc
 ---
 ### Caveats
 
-- Not tested against malformed HTML or CSS
+- Not tested against or designd to handle malformed HTML or CSS
+- Excessive escaping or reserved characters in your HTML or CSS can break DropCSS's parsers
 - There is no processing or execution of `<script>` tags; your HTML must be fully formed (or SSR'd). You should generate and append any additional HTML that you'd want to be considered by DropCSS. If you need JS execution, consider using the larger, slower but still good output, `UnCSS`. Alternatively, [Puppeteer can now output coverage reports](https://www.philkrie.me/2018/07/04/extracting-coverage.html), and there might be tools that utilize this coverage data to clean your CSS, too. DropCSS aims to be minimal, simple and effective.
 
 ---
