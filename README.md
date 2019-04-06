@@ -45,8 +45,6 @@ let css = `
 
 const whitelist = /#foo|\.bar/;
 
-let dropped = new Set();
-
 let cleaned = dropcss({
     html,
     css,
