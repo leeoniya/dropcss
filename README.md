@@ -5,7 +5,7 @@ An exceptionally fast, thorough and tiny unused-CSS cleaner _(MIT Licensed)_
 ---
 ### Introduction
 
-DropCSS is an exceptionally fast, thorough and tiny [~7.5 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thuse avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues), use a previous, larger and slower [0.3.x version](https://github.com/leeoniya/dropcss/releases) that uses heavier but more compliant parsers, or use an alternative CSS cleaner.
+DropCSS is an exceptionally fast, thorough and tiny ([~7.5 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js)) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thus avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues), use a previous, larger and slower [0.3.x version](https://github.com/leeoniya/dropcss/releases) that uses heavier but more compliant parsers, or use an alternative CSS cleaner.
 
 It is recommended to also run your CSS through a structural optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css), [csso](https://github.com/css/csso), [cssnano](https://github.com/cssnano/cssnano) or [crass](https://github.com/mattbasta/crass) to group selectors, merge and remove redundant rules, purge unused keyframes, etc.
 
@@ -89,15 +89,16 @@ console.log(cleaned.css);
 ---
 ### TODO
 
-- Removal of unused @keyframes - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes without much implementation difficulty.
-- Removal of unused @font-face - same as above
-- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). These are pretty easy to implement and good first issue for those interested in contributing:
+- Removal of unused @keyframes and @font-face - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
+- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
   - `:first-of-type`
   - `:last-of-type`
   - `:only-of-type`
   - `:nth-of-type()`
   - `:nth-last-of-type()`
   - `:nth-only-of-type()`
+
+Both of these are pretty easy to implement and a good first issues for those interested in contributing.
 
 ---
 ### Performance
