@@ -68,7 +68,7 @@ function parse(sel) {
 				setIdx(RE.ATTR);
 			}
 			else {
-				m = RE.IDENT.exec(sel)
+				m = RE.IDENT.exec(sel);
 				toks.push(m[1], mode);
 				setIdx(RE.IDENT);
 			}
