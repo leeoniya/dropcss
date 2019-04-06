@@ -33,9 +33,9 @@ function tokenize(css) {
 	// TODO: dry out with selector regexes?
 	const RE = {
 		RULE_HEAD:	/\s*([^{;]+?)\s*[{;]\s*/my,
-		RULE_TAIL:	/\s*([^}]+?)\s*\}/my,
+		RULE_TAIL:	/\s*([^}]*?)\s*\}/my,
 		AT_TAIL:	/\s*\}/my,
-		RULE_FULL:	/\s*([^{]+?)\{([^}]+?)\}/my,
+		RULE_FULL:	/\s*([^{]*?)\{([^}]+?)\}/my,
 	//	COMMENT:	/\s*\/\*.*?\*\/\s*/my,
 	};
 

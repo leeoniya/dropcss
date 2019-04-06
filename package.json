@@ -5,7 +5,7 @@
   "main": "./dist/dropcss.cjs.js",
   "scripts": {
     "build": "rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "url": "https://github.com/leeoniya/dropcss/issues"
   },
   "devDependencies": {
+    "mocha": "^6.0.2",
     "rollup": "^1.9.0",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-commonjs": "^9.3.4",

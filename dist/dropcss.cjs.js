@@ -231,9 +231,9 @@ function tokenize$1(css) {
 	// TODO: dry out with selector regexes?
 	var RE = {
 		RULE_HEAD:	/\s*([^{;]+?)\s*[{;]\s*/my,
-		RULE_TAIL:	/\s*([^}]+?)\s*\}/my,
+		RULE_TAIL:	/\s*([^}]*?)\s*\}/my,
 		AT_TAIL:	/\s*\}/my,
-		RULE_FULL:	/\s*([^{]+?)\{([^}]+?)\}/my,
+		RULE_FULL:	/\s*([^{]*?)\{([^}]+?)\}/my,
 	//	COMMENT:	/\s*\/\*.*?\*\/\s*/my,
 	};
 
@@ -670,7 +670,7 @@ function find(m, ctx) {
 						res = !find(val, {node: ctx.node, idx: val.length - 1});
 						break;
 					case 'empty':
-						res = n.childNodes.length == 0;
+						res = n.tagName != '#' && n.childNodes.length == 0;
 						break;
 					case 'first-child':
 						res = tidx == 0;

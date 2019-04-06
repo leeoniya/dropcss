@@ -62,8 +62,7 @@ console.log(cleaned.css);
 ### Features
 
 - Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
-- Supported Selectors
-
+- Supported selectors
   - `*` (universal)
   - `a` (tag)
   - `#` (id)
@@ -98,6 +97,9 @@ console.log(cleaned.css);
   - `:nth-only-of-type()`
 
 Both of these are pretty easy to implement and a good first issues for those interested in contributing.
+
+- Moar tests. Hundreds of additional, granular tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are tested is optimized to fast-path many things; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually just short circuit early if any of (`.foo`, `ul`, `p`) are missing from the dom, and will never continue to structural/context or negation testing. Tests must be carefully written to ensure they hit all the desired paths, which brings us to the next point...
+- Coverage of test code - this is also a challenge since it's impossible to exhaustively exercise the parsers because regex's cannot be exhaustively validated. We can only validate that the tokenizers do the "right thing" on pre-defined well-formed inputs. It might be helpful to write a fuzzer to find issues, but this is not a quick task.
 
 ---
 ### Performance

@@ -183,7 +183,7 @@ function find(m, ctx) {
 						res = !find(val, {node: ctx.node, idx: val.length - 1});
 						break;
 					case 'empty':
-						res = n.childNodes.length == 0;
+						res = n.tagName != '#' && n.childNodes.length == 0;
 						break;
 					case 'first-child':
 						res = tidx == 0;

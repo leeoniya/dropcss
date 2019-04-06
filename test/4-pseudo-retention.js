@@ -1,0 +1,1 @@
+// tests the selector parser to assure internal stripping of pseudo-elems and transient pseudo-classes, leaving only valid, assertable selectors
