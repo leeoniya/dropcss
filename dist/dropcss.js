@@ -724,6 +724,17 @@
 		return str.slice(0, index) + add + str.slice(index + count);
 	}
 
+	function removeBackwards(css, defs, used) {
+		for (var i = defs.length - 1; i > -1; i--) {
+			var d = defs[i];
+
+			if (!used.has(d[2]))
+				{ css = splice(css, d[0], d[1], ''); }
+		}
+
+		return css;
+	}
+
 	function dropKeyFrames(css) {
 		var defs = [];
 		var used = new Set();
@@ -745,16 +756,7 @@
 			});
 		}
 
-		// purge backwards
-		var css2 = css;
-		for (var i = defs.length - 1; i > -1; i--) {
-			var d = defs[i];
-
-			if (!used.has(d[2]))
-				{ css2 = splice(css2, d[0], d[1], ''); }
-		}
-
-		return css2;
+		return removeBackwards(css, defs, used);
 	}
 
 	function dropFontFaces(css) {
@@ -782,16 +784,7 @@
 			}
 		}
 
-		// purge backwards
-		var css2 = css;
-		for (var i = defs.length - 1; i > -1; i--) {
-			var d = defs[i];
-
-			if (!used.has(d[2]))
-				{ css2 = splice(css2, d[0], d[1], ''); }
-		}
-
-		return css2;
+		return removeBackwards(css, defs, used);
 	}
 
 	var drop = function (sel) { return true; };

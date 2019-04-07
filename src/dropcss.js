@@ -20,6 +20,17 @@ function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
 }
 
+function removeBackwards(css, defs, used) {
+	for (let i = defs.length - 1; i > -1; i--) {
+		let d = defs[i];
+
+		if (!used.has(d[2]))
+			css = splice(css, d[0], d[1], '');
+	}
+
+	return css;
+}
+
 function dropKeyFrames(css) {
 	let defs = [];
 	let used = new Set();
@@ -41,16 +52,7 @@ function dropKeyFrames(css) {
 		});
 	}
 
-	// purge backwards
-	let css2 = css;
-	for (let i = defs.length - 1; i > -1; i--) {
-		let d = defs[i];
-
-		if (!used.has(d[2]))
-			css2 = splice(css2, d[0], d[1], '');
-	}
-
-	return css2;
+	return removeBackwards(css, defs, used);
 }
 
 function dropFontFaces(css) {
@@ -78,16 +80,7 @@ function dropFontFaces(css) {
 		}
 	}
 
-	// purge backwards
-	let css2 = css;
-	for (let i = defs.length - 1; i > -1; i--) {
-		let d = defs[i];
-
-		if (!used.has(d[2]))
-			css2 = splice(css2, d[0], d[1], '');
-	}
-
-	return css2;
+	return removeBackwards(css, defs, used);
 }
 
 const drop = sel => true;
