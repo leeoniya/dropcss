@@ -18,16 +18,19 @@
 	var TEXT = 3;
 	var TAG_CLOSE = 4;
 
+	var VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
+
+	// doctype, comments, meta, style, link & script tags. TODO: CDATA
+	var NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
+	var RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
+	var RE = {
+		// TODO: handle self-closed tags <div/> ?
+		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/my,
+		TAG_TEXT: /\s*[^<]*/my,
+		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/my,
+	};
+
 	function tokenize(html, keepText) {
-		var RE = {
-			// TODO: handle self-closed tags <div/> ?
-			TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/my,
-			TAG_TEXT: /\s*[^<]*/my,
-			TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/my,
-		};
-
-		var RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
-
 		var pos = 0, m, tokens = [];
 
 		function syncPos(re) {
@@ -35,25 +38,6 @@
 			for (var k in RE)
 				{ RE[k].lastIndex = pos; }
 		}
-
-		var voidTags = {
-			area: true,
-			base: true,
-			br: true,
-			col: true,
-			command: true,
-			embed: true,
-			hr: true,
-			img: true,
-			input: true,
-			keygen: true,
-			link: true,
-			meta: true,
-			param: true,
-			source: true,
-			track: true,
-			wbr: true
-		};
 
 		function next() {
 			m = RE.TAG_CLOSE.exec(html);
@@ -81,7 +65,7 @@
 					tokens.push(ATTRS, attrMap);
 				}
 
-				if (tag in voidTags)
+				if (VOIDS.has(tag))
 					{ tokens.push(TAG_CLOSE); }
 
 				return;
@@ -99,6 +83,8 @@
 
 		while (pos < html.length)
 			{ next(); }
+
+		syncPos({lastIndex: 0});
 
 		return tokens;
 	}
@@ -179,8 +165,7 @@
 	}
 
 	var _export_parse_ = function (html, pruneText) {
-		// remove doctype, comments, meta, style, link & script tags. TODO: CDATA
-		html = html.replace(/<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi, '');
+		html = html.replace(NASTIES, '');
 
 		var tokens = tokenize(html, !pruneText);
 

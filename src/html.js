@@ -3,16 +3,19 @@ const ATTRS = 2;
 const TEXT = 3;
 const TAG_CLOSE = 4;
 
+const VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
+
+// doctype, comments, meta, style, link & script tags. TODO: CDATA
+const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
+const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
+const RE = {
+	// TODO: handle self-closed tags <div/> ?
+	TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/my,
+	TAG_TEXT: /\s*[^<]*/my,
+	TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/my,
+};
+
 function tokenize(html, keepText) {
-	const RE = {
-		// TODO: handle self-closed tags <div/> ?
-		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/my,
-		TAG_TEXT: /\s*[^<]*/my,
-		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/my,
-	};
-
-	const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm
-
 	let pos = 0, m, tokens = [];
 
 	function syncPos(re) {
@@ -20,25 +23,6 @@ function tokenize(html, keepText) {
 		for (let k in RE)
 			RE[k].lastIndex = pos;
 	}
-
-	const voidTags = {
-		area: true,
-		base: true,
-		br: true,
-		col: true,
-		command: true,
-		embed: true,
-		hr: true,
-		img: true,
-		input: true,
-		keygen: true,
-		link: true,
-		meta: true,
-		param: true,
-		source: true,
-		track: true,
-		wbr: true
-	};
 
 	function next() {
 		m = RE.TAG_CLOSE.exec(html);
@@ -66,7 +50,7 @@ function tokenize(html, keepText) {
 				tokens.push(ATTRS, attrMap);
 			}
 
-			if (tag in voidTags)
+			if (VOIDS.has(tag))
 				tokens.push(TAG_CLOSE);
 
 			return;
@@ -84,6 +68,8 @@ function tokenize(html, keepText) {
 
 	while (pos < html.length)
 		next();
+
+	syncPos({lastIndex: 0});
 
 	return tokens;
 }
@@ -164,8 +150,7 @@ function postProc(node, idx, ctx) {
 }
 
 exports.parse = (html, pruneText) => {
-	// remove doctype, comments, meta, style, link & script tags. TODO: CDATA
-	html = html.replace(/<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi, '');
+	html = html.replace(NASTIES, '');
 
 	let tokens = tokenize(html, !pruneText);
 
