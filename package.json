@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "test": "nyc mocha test/src/*.js",
-    "coverage": "nyc report --reporter=text-summary --reporter=text > ./test/coverage.txt"
+    "coverage": "nyc report --reporter=lcov --reporter=text > ./test/coverage.txt"
   },
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT",

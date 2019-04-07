@@ -6,7 +6,7 @@ function parse(sel) {
 		IDENT:	/([\w*-]+)/iy,
 		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
 		PSEUDO:	/([\w-]+)(?:\(([^)]*)\))?/iy,
-		MODE:	/\s*:?[:.#\[]\s*/iy,
+		MODE:	/\s*[:.#\[]\s*/iy,
 		COMB:	/\s*[>~+]\s*|\s+/iy
 	};
 
@@ -28,8 +28,10 @@ function parse(sel) {
 			matched = true;
 
 			let mode = m[0].trim();
+
 			if (mode == '')
 				mode = ' ';
+
 			toks.push(mode);
 			setIdx(RE.COMB);
 			lastComb = idx;
@@ -38,9 +40,6 @@ function parse(sel) {
 			matched = true;
 
 			let mode = m[0].trim();
-
-			if (mode == '')
-				mode = ' ';
 
 			setIdx(RE.MODE);
 
