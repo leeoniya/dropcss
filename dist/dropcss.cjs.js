@@ -626,9 +626,6 @@ function find(m, ctx) {
 					case 'not':
 						res = !find(val, {node: ctx.node, idx: val.length - 1});
 						break;
-					case 'empty':
-						res = n.tagName != '#' && n.childNodes.length == 0;
-						break;
 					case 'first-child':
 						res = tidx == 0;
 						break;
@@ -706,7 +703,7 @@ var _export_some_ = function (nodes, sel) {
 
 var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
-var pseudoAssertable = /:(?:first|last|nth|only|not|empty)\b/;		// |lang
+var pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
 
 function stripNonAssertablePseudos(sel) {
 	// strip pseudo-elements and transient pseudo-classes

@@ -50,7 +50,6 @@ let dropped = new Set();
 let cleaned = dropcss({
     html,
     css,
-    keepText: false,
     shouldDrop: (sel) => {
         if (whitelist.test(sel))
             return false;
@@ -66,8 +65,7 @@ console.log(cleaned.css);
 console.log(dropped);
 ```
 
-- `shouldDrop` is called for every CSS selector that could not be matched in the `html`. Return `false` to retain the selector or `true` to drop it. Additionally, this hook can be used to log all removed selectors.
-- `keepText` - By default, DropCSS will remove all text nodes from the HTML before processing further since very few CSS selectors can actually target text. Not having to process text nodes is a significant performance boost. However, a few uncommon pseudo-classes like `:blank` and `:empty` do assert on text nodes. If combined as e.g. `:not(:empty)`, this could result wrongful removal, or wrongful retention of selectors. Setting `keepText` to `true` will leave all text nodes in place to allow for this to work properly at the expense of performance.
+The `shouldDrop` hook is called for every CSS selector that could not be matched in the `html`. Return `false` to retain the selector or `true` to drop it.
 
 ---
 ### Features
@@ -88,7 +86,6 @@ console.log(dropped);
   - `[attr^=val]`
   - `[attr$=val]`
   - `:not()`
-  - `:empty`
   - `:first-child`
   - `:last-child`
   - `:only-child`

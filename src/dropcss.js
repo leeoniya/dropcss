@@ -5,7 +5,7 @@ const matches = require('./matches');
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
-const pseudoAssertable = /:(?:first|last|nth|only|not|empty)\b/;		// |lang
+const pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
 
 function stripNonAssertablePseudos(sel) {
 	// strip pseudo-elements and transient pseudo-classes
