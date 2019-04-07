@@ -5,7 +5,7 @@ The input HTML file is a large, 1.28 MB [wiki article](https://en.wikipedia.org/
 Employing HTML that utilizes little of the CSS is intentional since the goal is to maximize the rules that must be removed while increasing the cost of assertion by providing a huge DOM structure.
 
 ```
-[ 'DropCSS',      '129ms',   '6.39 KB' ]
+[ 'DropCSS',      '123ms',   '5.37 KB' ]
 [ 'PurgeCSS',     '346ms',  '21.06 KB' ]
 [ 'PurifyCSS',    '827ms',  '13.26 KB' ]
 [ 'UnCSS',      '27153ms',  '13.63 KB' ]

@@ -1,4 +1,4 @@
-const nth = require('./nth');
+const { nth } = require('./nth');
 
 function matchesType(el, name) {
 	return name == el.tagName || name == '*';

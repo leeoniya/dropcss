@@ -206,52 +206,6 @@ code{
     justify-content:space-between;
     padding:.5rem 1rem
 }
-@-webkit-keyframes progress-bar-stripes{
-    from{
-        background-position:1rem 0
-    }
-    to{
-        background-position:0 0
-    }
-}
-@keyframes progress-bar-stripes{
-    from{
-        background-position:1rem 0
-    }
-    to{
-        background-position:0 0
-    }
-}
-@-webkit-keyframes spinner-border{
-    to{
-        -webkit-transform:rotate(360deg);
-        transform:rotate(360deg)
-    }
-}
-@keyframes spinner-border{
-    to{
-        -webkit-transform:rotate(360deg);
-        transform:rotate(360deg)
-    }
-}
-@-webkit-keyframes spinner-grow{
-    0%{
-        -webkit-transform:scale(0);
-        transform:scale(0)
-    }
-    50%{
-        opacity:1
-    }
-}
-@keyframes spinner-grow{
-    0%{
-        -webkit-transform:scale(0);
-        transform:scale(0)
-    }
-    50%{
-        opacity:1
-    }
-}
 @media print{
     *,::after,::before{
         text-shadow:none!important;
@@ -285,26 +239,6 @@ code{
     }
     .navbar{
         display:none
-    }
-}
-@-webkit-keyframes spinAround{
-    from{
-        -webkit-transform:rotate(0);
-        transform:rotate(0)
-    }
-    to{
-        -webkit-transform:rotate(359deg);
-        transform:rotate(359deg)
-    }
-}
-@keyframes spinAround{
-    from{
-        -webkit-transform:rotate(0);
-        transform:rotate(0)
-    }
-    to{
-        -webkit-transform:rotate(359deg);
-        transform:rotate(359deg)
     }
 }
 blockquote,body,dd,dl,h1,h2,h3,h4,html,li,ol,p,ul{
@@ -411,22 +345,6 @@ table th{
     display:block;
     height:auto;
     width:100%
-}
-@-webkit-keyframes moveIndeterminate{
-    from{
-        background-position:200% 0
-    }
-    to{
-        background-position:-200% 0
-    }
-}
-@keyframes moveIndeterminate{
-    from{
-        background-position:200% 0
-    }
-    to{
-        background-position:-200% 0
-    }
 }
 .menu{
     font-size:1rem

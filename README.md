@@ -171,16 +171,13 @@ A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/benc
 ---
 ### TODO
 
-- Removal of unused `@keyframes` and `@font-face` - this is technically out of scope for this project since it's purely an in-css structural optimization, but few CSS optimizers actually do it and it can save quite a few bytes. [Issue #5](https://github.com/leeoniya/dropcss/issues/5).
-- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
+- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). This is pretty easy to implement and a good first issues for those interested in contributing: [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
   - `:first-of-type`
   - `:last-of-type`
   - `:only-of-type`
   - `:nth-of-type()`
   - `:nth-last-of-type()`
   - `:nth-only-of-type()`
-
-Both of these are pretty easy to implement and a good first issues for those interested in contributing.
 
 - Moar tests. Hundreds of additional, granular tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy waste time writing a lot of useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
 

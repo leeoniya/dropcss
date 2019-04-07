@@ -29,6 +29,26 @@ function stripAllPseudos(sel) {
 	return sel.replace(/:?:[a-z-]+(?:\([^()]+\))?/gm, '');
 }
 
+// pos must already be past opening {
+function takeUntilMatchedClosing(css, pos) {
+	let chunk = '';
+	let unclosed = 1;
+
+	while (1) {
+		if (css[pos] == '{')
+			unclosed++;
+		else if (css[pos] == '}')
+			unclosed--;
+
+		if (unclosed == 0)
+			break;
+
+		chunk += css[pos++];
+	}
+
+	return chunk;
+}
+
 function tokenize(css) {
 	// TODO: dry out with selector regexes?
 	const RE = {
@@ -49,27 +69,7 @@ function tokenize(css) {
 			RE[k].lastIndex = pos;
 	}
 
-	// pos must already be past opening {
-	function takeUntilMatchedClosing() {
-		let chunk = '';
-		let unclosed = 1;
 
-		while (1) {
-			if (css[pos] == '{')
-				unclosed++;
-			else if (css[pos] == '}')
-				unclosed--;
-
-			if (unclosed == 0)
-				break;
-
-			chunk += css[pos++];
-		}
-
-		syncPos({lastIndex: pos});
-
-		return chunk;
-	}
 
 	function next() {
 		if (inAt > 0) {
@@ -116,7 +116,8 @@ function tokenize(css) {
 				//	case '@counter-style':
 				//	case '@font-feature-values':
 						inAt++;
-						let chunk = takeUntilMatchedClosing();
+						let chunk = takeUntilMatchedClosing(css, pos);
+						syncPos({lastIndex: pos + chunk.length});
 						tokens.push(START_AT, pre, AT_CHUNK, chunk);
 						break;
 				}
@@ -185,3 +186,4 @@ function generate(tokens) {
 exports.parse = parse;
 exports.generate = generate;
 exports.SELECTORS = SELECTORS;
+exports.takeUntilMatchedClosing = takeUntilMatchedClosing;

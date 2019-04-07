@@ -174,7 +174,7 @@ function postProc(node, idx, ctx) {
 	ctx.nodes.push(node);
 }
 
-var parse = function (html, pruneText) {
+var _export_parse_ = function (html, pruneText) {
 	// remove doctype, comments, meta, style, link & script tags. TODO: CDATA
 	html = html.replace(/<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi, '');
 
@@ -190,10 +190,6 @@ var parse = function (html, pruneText) {
 	var tree = build(tokens, function (node, idx) { return postProc(node, idx, ctx); });
 
 	return ctx;
-};
-
-var html = {
-	parse: parse
 };
 
 var COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
@@ -227,6 +223,26 @@ function stripAllPseudos(sel) {
 	return sel.replace(/:?:[a-z-]+(?:\([^()]+\))?/gm, '');
 }
 
+// pos must already be past opening {
+function takeUntilMatchedClosing(css, pos) {
+	var chunk = '';
+	var unclosed = 1;
+
+	while (1) {
+		if (css[pos] == '{')
+			{ unclosed++; }
+		else if (css[pos] == '}')
+			{ unclosed--; }
+
+		if (unclosed == 0)
+			{ break; }
+
+		chunk += css[pos++];
+	}
+
+	return chunk;
+}
+
 function tokenize$1(css) {
 	// TODO: dry out with selector regexes?
 	var RE = {
@@ -247,27 +263,7 @@ function tokenize$1(css) {
 			{ RE[k].lastIndex = pos; }
 	}
 
-	// pos must already be past opening {
-	function takeUntilMatchedClosing() {
-		var chunk = '';
-		var unclosed = 1;
 
-		while (1) {
-			if (css[pos] == '{')
-				{ unclosed++; }
-			else if (css[pos] == '}')
-				{ unclosed--; }
-
-			if (unclosed == 0)
-				{ break; }
-
-			chunk += css[pos++];
-		}
-
-		syncPos({lastIndex: pos});
-
-		return chunk;
-	}
 
 	function next() {
 		if (inAt > 0) {
@@ -314,7 +310,8 @@ function tokenize$1(css) {
 				//	case '@counter-style':
 				//	case '@font-feature-values':
 						inAt++;
-						var chunk = takeUntilMatchedClosing();
+						var chunk = takeUntilMatchedClosing(css, pos);
+						syncPos({lastIndex: pos + chunk.length});
 						tokens.push(START_AT, pre, AT_CHUNK, chunk);
 						break;
 				}
@@ -340,7 +337,7 @@ function tokenize$1(css) {
 	return tokens;
 }
 
-function parse$1(css) {
+function parse(css) {
 	// strip comments (for now)
 	css = css.replace(COMMENTS, '');
 	return tokenize$1(css);
@@ -379,16 +376,6 @@ function generate(tokens) {
 	// strip leftover empty @ rules
 	return out.replace(/@[a-z-]+\s+[^{]+\{\s*\}/gm, '');
 }
-
-var parse_1 = parse$1;
-var generate_1 = generate;
-var SELECTORS_1 = SELECTORS;
-
-var css = {
-	parse: parse_1,
-	generate: generate_1,
-	SELECTORS: SELECTORS_1
-};
 
 // adapted from https://github.com/fb55/nth-check/blob/master/compile.js
 
@@ -446,8 +433,6 @@ function nth(a, b, pos) {
 	return pos <= b && pos % a === bMod;
 }
 
-var nth_1 = nth;
-
 function matchesType(el, name) {
 	return name == el.tagName || name == '*';
 }
@@ -475,20 +460,8 @@ function matchesClass(el, name) {
 	return el.classList.has(name);
 }
 
-var type = matchesType;
-var class_1 = matchesClass;
-var attr = matchesAttr;
-var nthChild = nth_1;
-
-var matches = {
-	type: type,
-	class: class_1,
-	attr: attr,
-	nthChild: nthChild
-};
-
 // assumes stripPseudos(sel); has already been called
-function parse$2(sel) {
+function parse$1(sel) {
 	var RE = {
 		IDENT:	/([\w*-]+)/iy,
 		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
@@ -535,7 +508,7 @@ function parse$2(sel) {
 				toks.splice(
 					lastComb + 1,
 					0,
-					m[2] != null && m[1] == 'not' ? parse$2(m[2]) : m[2],
+					m[2] != null && m[1] == 'not' ? parse$1(m[2]) : m[2],
 					m[1],
 					mode$1
 				);
@@ -619,8 +592,8 @@ function _nthChild(pos, val) {
 		{ res = pos == +val; }
 	// :nth-child(An+B)
 	else {
-		var nth = parseNth(val);
-		res = matches.nthChild(nth[0], nth[1], pos);
+		var nth$1 = parseNth(val);
+		res = nth(nth$1[0], nth$1[1], pos);
 	}
 
 	return res;
@@ -635,24 +608,24 @@ function find(m, ctx) {
 		switch(m[ctx.idx]) {
 			case '_':
 				name	= m[--ctx.idx];
-				res		= matches.type(ctx.node, name);
+				res		= matchesType(ctx.node, name);
 				ctx.idx--;
 				break;
 			case '#':
 				val		= m[--ctx.idx];
-				res		= matches.attr(ctx.node, 'id', val, '=');
+				res		= matchesAttr(ctx.node, 'id', val, '=');
 				ctx.idx--;
 				break;
 			case '.':
 				name	= m[--ctx.idx];
-				res		= matches.class(ctx.node, name);
+				res		= matchesClass(ctx.node, name);
 				ctx.idx--;
 				break;
 			case '[':
 				name	= m[--ctx.idx];
 				mat		= m[--ctx.idx];
 				val		= m[--ctx.idx];
-				res		= matches.attr(ctx.node, name, val, mat);
+				res		= matchesAttr(ctx.node, name, val, mat);
 				ctx.idx--;
 				break;
 			case ':':
@@ -742,23 +715,9 @@ function find(m, ctx) {
 
 	return res;
 }
-
-var parse_1$1 = parse$2;
-var some_1 = function (nodes, sel) {
-	return some(nodes, Array.isArray(sel) ? sel : parse$2(sel));
+var _export_some_ = function (nodes, sel) {
+	return some(nodes, Array.isArray(sel) ? sel : parse$1(sel));
 };
-
-var sel = {
-	parse: parse_1$1,
-	some: some_1
-};
-
-var parseHTML = html.parse;
-var parseCSS = css.parse;
-var generateCSS = css.generate;
-var SELECTORS$1 = css.SELECTORS;
-var some$1 = sel.some;
-
 
 var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
@@ -772,16 +731,53 @@ function stripNonAssertablePseudos(sel) {
 	.replace(/:[a-z-]+\(\)/gm, '');
 }
 
+function splice(str, index, count, add) {
+	return str.slice(0, index) + add + str.slice(index + count);
+}
+
+function dropKeyFrames(css) {
+	var matches = [];
+	var used = new Set();
+
+	// defined
+	var RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
+
+	while (m = RE.exec(css)) {
+		var ch = takeUntilMatchedClosing(css, RE.lastIndex);
+		matches.push([m.index, m[0].length + ch.length + 1, m[1]]);
+	}
+
+	// used
+	var RE2 = /animation(?:-name)?:([^;!}]+)/gm;
+
+	while (m = RE2.exec(css)) {
+		m[1].trim().split(",").forEach(function (a) {
+			used.add(a.trim().match(/^[\w-]+/)[0]);
+		});
+	}
+
+	// purge backwards
+	var css2 = css;
+	for (var i = matches.length - 1; i > -1; i--) {
+		var ma = matches[i];
+
+		if (!used.has(ma[2]))
+			{ css2 = splice(css2, ma[0], ma[1], ''); }
+	}
+
+	return css2;
+}
+
 var drop = function (sel) { return false; };
 
 function dropcss(opts) {
 
 	// {nodes, tag, class, id}
-	var H = parseHTML(opts.html, !opts.keepText);
+	var H = _export_parse_(opts.html, !opts.keepText);
 
 	var shouldKeep = opts.shouldKeep || drop;
 
-	var tokens = parseCSS(opts.css);
+	var tokens = parse(opts.css);
 
 	// cache
 	var tested = {};
@@ -790,7 +786,7 @@ function dropcss(opts) {
 	for (var i = 0; i < tokens.length; i++) {
 		var token = tokens[i];
 
-		if (token !== SELECTORS$1)
+		if (token !== SELECTORS)
 			{ continue; }
 
 		var sels = tokens[i+1];
@@ -830,7 +826,7 @@ function dropcss(opts) {
 								{ tested[sub] = hasOne = H.attr.has(sub); }
 							else {
 								var m = sub.match(ATTRIBUTES);
-								tested[sub] = hasOne = H.nodes.some(function (el) { return matches.attr(el, m[1], m[3], m[2]); });
+								tested[sub] = hasOne = H.nodes.some(function (el) { return matchesAttr(el, m[1], m[3], m[2]); });
 							}
 							break;
 						default:
@@ -853,7 +849,7 @@ function dropcss(opts) {
 	for (var i$1 = 0; i$1 < tokens.length; i$1++) {
 		var tok = tokens[i$1];
 
-		if (tok === SELECTORS$1) {
+		if (tok === SELECTORS) {
 			i$1++;
 			var len = tokens[i$1].length;
 			tokens[i$1] = tokens[i$1].filter(function (s) {
@@ -869,7 +865,7 @@ function dropcss(opts) {
 					if (cleaned in tested)
 						{ return tested[cleaned]; }
 
-					return tested[cleaned] = (some$1(H.nodes, cleaned) || shouldKeep(s) === true);
+					return tested[cleaned] = (_export_some_(H.nodes, cleaned) || shouldKeep(s) === true);
 				}
 
 				return false;
@@ -877,7 +873,9 @@ function dropcss(opts) {
 		}
 	}
 
-	var out = generateCSS(tokens);
+	var out = generate(tokens);
+
+	out = dropKeyFrames(out);
 
 //	log.forEach(e => console.log(e[0], e[1]));
 
@@ -886,6 +884,4 @@ function dropcss(opts) {
 	};
 }
 
-var dropcss_1 = dropcss;
-
-module.exports = dropcss_1;
+module.exports = dropcss;

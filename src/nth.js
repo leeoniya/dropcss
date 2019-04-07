@@ -54,4 +54,4 @@ function nth(a, b, pos) {
 	return pos <= b && pos % a === bMod;
 }
 
-module.exports = nth;
+exports.nth = nth;

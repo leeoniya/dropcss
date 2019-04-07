@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-import commonjs from 'rollup-plugin-commonjs';
+import cjs from 'rollup-plugin-cjs-es';
 import buble from 'rollup-plugin-buble';
 import { terser } from 'rollup-plugin-terser';
 
@@ -29,9 +29,9 @@ export default [
 			banner,
 		},
 		plugins: [
-			commonjs(),
+			cjs({nested: true, cache: false}),
 			buble({
-				transforms: { stickyRegExp: false }
+				transforms: {stickyRegExp: false}
 			}),
 		]
 	},
@@ -44,9 +44,9 @@ export default [
 			banner,
 		},
 		plugins: [
-			commonjs(),
+			cjs({nested: true, cache: false}),
 			buble({
-				transforms: { stickyRegExp: false }
+				transforms: {stickyRegExp: false}
 			}),
 		]
 	},
@@ -59,9 +59,9 @@ export default [
 			banner: "/*! " + urlVer + " */",
 		},
 		plugins: [
-			commonjs(),
+			cjs({nested: true, cache: false}),
 			buble({
-				transforms: { stickyRegExp: false }
+				transforms: {stickyRegExp: false}
 			}),
 			terser({
 				output: {
