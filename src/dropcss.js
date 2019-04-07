@@ -57,7 +57,7 @@ function dropFontFaces(css) {
 
 }
 
-const drop = sel => false;
+const drop = sel => true;
 
 function dropcss(opts) {
 	let START = +new Date();
@@ -69,7 +69,7 @@ function dropcss(opts) {
 
 	log.push([+new Date() - START, 'HTML parsed & processed']);
 
-	const shouldKeep = opts.shouldKeep || drop;
+	const shouldDrop = opts.shouldDrop || drop;
 
 	let tokens = parseCSS(opts.css);
 
@@ -131,7 +131,7 @@ function dropcss(opts) {
 				}
 
 				if (!hasOne) {
-					if (shouldKeep(sels[j]) !== true)
+					if (shouldDrop(sels[j]) === true)
 						sels[j] = null;
 					else
 						tested[sels[j]] = true;			// should this be pseudo-stripped?
@@ -163,7 +163,7 @@ function dropcss(opts) {
 					if (cleaned in tested)
 						return tested[cleaned];
 
-					return tested[cleaned] = (some(H.nodes, cleaned) || shouldKeep(s) === true);
+					return tested[cleaned] = (some(H.nodes, cleaned) || shouldDrop(s) !== true);
 				}
 
 				return false;

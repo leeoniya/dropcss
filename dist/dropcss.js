@@ -772,14 +772,14 @@
 		return css2;
 	}
 
-	var drop = function (sel) { return false; };
+	var drop = function (sel) { return true; };
 
 	function dropcss(opts) {
 
 		// {nodes, tag, class, id}
 		var H = _export_parse_(opts.html, !opts.keepText);
 
-		var shouldKeep = opts.shouldKeep || drop;
+		var shouldDrop = opts.shouldDrop || drop;
 
 		var tokens = parse(opts.css);
 
@@ -839,7 +839,7 @@
 					}
 
 					if (!hasOne) {
-						if (shouldKeep(sels[j]) !== true)
+						if (shouldDrop(sels[j]) === true)
 							{ sels[j] = null; }
 						else
 							{ tested[sels[j]] = true; }			// should this be pseudo-stripped?
@@ -869,7 +869,7 @@
 						if (cleaned in tested)
 							{ return tested[cleaned]; }
 
-						return tested[cleaned] = (_export_some_(H.nodes, cleaned) || shouldKeep(s) === true);
+						return tested[cleaned] = (_export_some_(H.nodes, cleaned) || shouldDrop(s) !== true);
 					}
 
 					return false;
