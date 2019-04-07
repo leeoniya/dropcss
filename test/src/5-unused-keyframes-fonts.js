@@ -3,18 +3,19 @@ const assert = require('assert');
 
 describe('Unused @keyframes and @font-face', () => {
 	let html;
-	let css = `
-		div{color: red;}
-		@keyframes pulse{0%{width:300%;}100%{width:100%;}}
-		@-webkit-keyframes pulse{0%{width:300%;}100%{width:100%;}}
-		@keyframes nudge{0%{width:300%;}100%{width:100%;}}
-		@-webkit-keyframes nudge{0%{width:300%;}100%{width:100%;}}
-		@keyframes bop{0%{width:300%;}100%{width:100%;}}
-		@-webkit-keyframes bop{0%{width:300%;}100%{width: 100%;}}
-		span{color: black;}
-	`;
 
 	describe('@keyframes', () => {
+		let css = `
+			div{color: red;}
+			@keyframes pulse{0%{width:300%;}100%{width:100%;}}
+			@-webkit-keyframes pulse{0%{width:300%;}100%{width:100%;}}
+			@keyframes nudge{0%{width:300%;}100%{width:100%;}}
+			@-webkit-keyframes nudge{0%{width:300%;}100%{width:100%;}}
+			@keyframes bop{0%{width:300%;}100%{width:100%;}}
+			@-webkit-keyframes bop{0%{width:300%;}100%{width: 100%;}}
+			span{color: black;}
+		`;
+
 		it('should drop all', function() {
 			let prepend = '';
 
@@ -56,5 +57,28 @@ describe('Unused @keyframes and @font-face', () => {
 		});
 	});
 
-//	describe('@font-face', () => {});
+	describe('@font-face', () => {
+		let css = "div{color: red;}@font-face{font-family: 'MyWebFont';}span{color: black;}";
+		let fontUse = "";
+
+		it('should retain if used', function() {
+			let prepend = "div{font-family: 'MyWebFont', Fallback, sans-serif;}";
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	prepend + css,
+			});
+			assert.equal(out, prepend + "div{color: red;}@font-face{font-family: 'MyWebFont';}");
+		});
+
+		it('should drop if unused', function() {
+			let prepend = "";
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	prepend + css,
+			});
+			assert.equal(out, prepend + "div{color: red;}");
+		});
+	});
 });

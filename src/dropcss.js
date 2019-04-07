@@ -21,7 +21,7 @@ function splice(str, index, count, add) {
 }
 
 function dropKeyFrames(css) {
-	let matches = [];
+	let defs = [];
 	let used = new Set();
 
 	// defined
@@ -29,7 +29,7 @@ function dropKeyFrames(css) {
 
 	while (m = RE.exec(css)) {
 		let ch = takeUntilMatchedClosing(css, RE.lastIndex);
-		matches.push([m.index, m[0].length + ch.length + 1, m[1]]);
+		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 	}
 
 	// used
@@ -43,18 +43,51 @@ function dropKeyFrames(css) {
 
 	// purge backwards
 	let css2 = css;
-	for (let i = matches.length - 1; i > -1; i--) {
-		let ma = matches[i];
+	for (let i = defs.length - 1; i > -1; i--) {
+		let d = defs[i];
 
-		if (!used.has(ma[2]))
-			css2 = splice(css2, ma[0], ma[1], '');
+		if (!used.has(d[2]))
+			css2 = splice(css2, d[0], d[1], '');
 	}
 
 	return css2;
 }
 
 function dropFontFaces(css) {
+	let defs = [];
+	let used = new Set();
 
+	// defined
+	let RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+
+	while (m = RE.exec(css)) {
+		let clean = m[1].replace(/['"]/gm, '');
+		defs.push([m.index, m[0].length, clean]);
+	}
+
+	// used
+	let RE2 = /font-family:([^;!}]+)/gm;
+
+	while (m = RE2.exec(css)) {
+		let inDef = defs.some(d => m.index > d[0] && m.index < d[0] + d[1]);
+
+		if (!inDef) {
+			m[1].trim().split(",").forEach(a => {
+				used.add(a.trim().replace(/['"]/gm, ''));
+			});
+		}
+	}
+
+	// purge backwards
+	let css2 = css;
+	for (let i = defs.length - 1; i > -1; i--) {
+		let d = defs[i];
+
+		if (!used.has(d[2]))
+			css2 = splice(css2, d[0], d[1], '');
+	}
+
+	return css2;
 }
 
 const drop = sel => true;
@@ -179,7 +212,11 @@ function dropcss(opts) {
 
 	out = dropKeyFrames(out);
 
-	log.push([+new Date() - START, 'Drop keyframes']);
+	log.push([+new Date() - START, 'Drop unused @keyframes']);
+
+	out = dropFontFaces(out);
+
+	log.push([+new Date() - START, 'Drop unused @font-face']);
 
 //	log.forEach(e => console.log(e[0], e[1]));
 

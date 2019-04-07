@@ -725,7 +725,7 @@
 	}
 
 	function dropKeyFrames(css) {
-		var matches = [];
+		var defs = [];
 		var used = new Set();
 
 		// defined
@@ -733,7 +733,7 @@
 
 		while (m = RE.exec(css)) {
 			var ch = takeUntilMatchedClosing(css, RE.lastIndex);
-			matches.push([m.index, m[0].length + ch.length + 1, m[1]]);
+			defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 		}
 
 		// used
@@ -747,11 +747,48 @@
 
 		// purge backwards
 		var css2 = css;
-		for (var i = matches.length - 1; i > -1; i--) {
-			var ma = matches[i];
+		for (var i = defs.length - 1; i > -1; i--) {
+			var d = defs[i];
 
-			if (!used.has(ma[2]))
-				{ css2 = splice(css2, ma[0], ma[1], ''); }
+			if (!used.has(d[2]))
+				{ css2 = splice(css2, d[0], d[1], ''); }
+		}
+
+		return css2;
+	}
+
+	function dropFontFaces(css) {
+		var defs = [];
+		var used = new Set();
+
+		// defined
+		var RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+
+		while (m = RE.exec(css)) {
+			var clean = m[1].replace(/['"]/gm, '');
+			defs.push([m.index, m[0].length, clean]);
+		}
+
+		// used
+		var RE2 = /font-family:([^;!}]+)/gm;
+
+		while (m = RE2.exec(css)) {
+			var inDef = defs.some(function (d) { return m.index > d[0] && m.index < d[0] + d[1]; });
+
+			if (!inDef) {
+				m[1].trim().split(",").forEach(function (a) {
+					used.add(a.trim().replace(/['"]/gm, ''));
+				});
+			}
+		}
+
+		// purge backwards
+		var css2 = css;
+		for (var i = defs.length - 1; i > -1; i--) {
+			var d = defs[i];
+
+			if (!used.has(d[2]))
+				{ css2 = splice(css2, d[0], d[1], ''); }
 		}
 
 		return css2;
@@ -865,6 +902,8 @@
 		var out = generate(tokens);
 
 		out = dropKeyFrames(out);
+
+		out = dropFontFaces(out);
 
 	//	log.forEach(e => console.log(e[0], e[1]));
 
