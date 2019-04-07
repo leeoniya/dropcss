@@ -4,7 +4,7 @@
 *
 * dropcss.js (DropCSS)
 * An exceptionally fast, thorough and tiny unused-CSS cleaner
-* https://github.com/leeoniya/dropcss (v0.5.0-dev)
+* https://github.com/leeoniya/dropcss (v0.5.0)
 */
 
 'use strict';
