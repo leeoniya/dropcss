@@ -97,7 +97,7 @@ function some(nodes, m) {
 const RE_NTH = /^([+-]?\d*)?n([+-]\d+)?$/;
 
 function parseNth(expr) {
-	let m = RE_NTH.exec(val);
+	let m = RE_NTH.exec(expr);
 
 	if (m != null) {
 		let a = m[1];

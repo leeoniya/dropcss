@@ -304,5 +304,25 @@ describe('Context-free, unary selector', () => {
 		});
 	});
 
+	describe(':empty', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	':empty {}',
+				keepText: true,
+			});
+			assert.equal(out, ':empty{}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div>X</div>',
+				css:	':empty {}',
+				keepText: true,
+			});
+			assert.equal(out, '');
+		});
+	});
+
 	// *-child assertions dont make to test in a unary selector since all root elements will be first/last/only "children"
 });

@@ -497,7 +497,7 @@
 			IDENT:	/([\w*-]+)/iy,
 			ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
 			PSEUDO:	/([\w-]+)(?:\(([^)]*)\))?/iy,
-			MODE:	/\s*:?[:.#\[]\s*/iy,
+			MODE:	/\s*[:.#\[]\s*/iy,
 			COMB:	/\s*[>~+]\s*|\s+/iy
 		};
 
@@ -519,8 +519,10 @@
 				matched = true;
 
 				var mode = m[0].trim();
+
 				if (mode == '')
 					{ mode = ' '; }
+
 				toks.push(mode);
 				setIdx(RE.COMB);
 				lastComb = idx;
@@ -529,9 +531,6 @@
 				matched = true;
 
 				var mode$1 = m[0].trim();
-
-				if (mode$1 == '')
-					{ mode$1 = ' '; }
 
 				setIdx(RE.MODE);
 
@@ -589,7 +588,7 @@
 	var RE_NTH = /^([+-]?\d*)?n([+-]\d+)?$/;
 
 	function parseNth(expr) {
-		var m = RE_NTH.exec(val);
+		var m = RE_NTH.exec(expr);
 
 		if (m != null) {
 			var a = m[1];
