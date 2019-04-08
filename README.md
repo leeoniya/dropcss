@@ -12,7 +12,7 @@ As a bonus, DropCSS will also remove unused any `@keyframes` and `@font-face` bl
 A bit more on this project's backstory & discussions in [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/) and on [Hacker News](https://news.ycombinator.com/item?id=19469080).
 
 ---
-<h3 align="center"><a href="https://codepen.io/leeoniya/pen/LvbRyq">&gt;&gt; Live Demo &lt;&lt;</a></h3>
+<h3 align="center">Live Demo: <a href="https://codepen.io/leeoniya/pen/LvbRyq">https://codepen.io/leeoniya/pen/LvbRyq</a></h3>
 
 ---
 ### Installation
