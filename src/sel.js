@@ -1,4 +1,5 @@
 const matches = require('./matches');
+const { getSibsOfType } = require('./html');
 
 // assumes stripPseudos(sel); has already been called
 function parse(sel) {
@@ -173,9 +174,11 @@ function find(m, ctx) {
 				val		= m[--ctx.idx];
 
 				let n = ctx.node;
+				let tag = n.tagName;
 				tidx = n.idx;
 				par = n.parentNode;
 				let len = par ? par.childNodes.length : 1;
+				let tsibs;
 
 				switch (name) {
 					case 'not':
@@ -195,6 +198,26 @@ function find(m, ctx) {
 						break;
 					case 'nth-last-child':
 						res = _nthChild(len - tidx, val);
+						break;
+					case 'first-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = n._typeIdx == 0;
+						break;
+					case 'last-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = n._typeIdx == tsibs.length - 1;
+						break;
+					case 'only-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = tsibs.length == 1;
+						break;
+					case 'nth-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = _nthChild(n._typeIdx + 1, val);
+						break;
+					case 'nth-last-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = _nthChild(tsibs.length - n._typeIdx, val);
 						break;
 				}
 

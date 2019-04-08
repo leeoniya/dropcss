@@ -94,6 +94,11 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
   - `:only-child`
   - `:nth-child()`
   - `:nth-last-child()`
+  - `:first-of-type`
+  - `:last-of-type`
+  - `:only-of-type`
+  - `:nth-of-type()`
+  - `:nth-last-of-type()`
 
 ---
 ### Performance
@@ -182,15 +187,7 @@ A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/benc
 ---
 ### TODO
 
-- All `-of-type` selectors are currently unimplemented, so will not be removed unless already disqualified by a paired selector, (e.g. `.card:first-of-type` when `.card` is absent altogether). This is pretty easy to implement and a good first issue for those interested in contributing: [Issue #4](https://github.com/leeoniya/dropcss/issues/4).
-  - `:first-of-type`
-  - `:last-of-type`
-  - `:only-of-type`
-  - `:nth-of-type()`
-  - `:nth-last-of-type()`
-  - `:nth-only-of-type()`
-
-- Moar tests. Hundreds of additional, granular tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy to waste a lot of time writing useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
+- Moar tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy to waste a lot of time writing useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
 
 ---
 ### Caveats

@@ -82,6 +82,28 @@ function node(parent, tagName, attrs) {
 	};
 }
 
+// adds ._ofTypes: {<tagName>: [...]} to parent
+// adds ._typeIdx to childNodes
+function getSibsOfType(par, tagName) {
+	if (par != null) {
+		let ofTypes = (par._ofTypes = par._ofTypes || {});
+
+		if (!(tagName in ofTypes)) {
+			let typeIdx = 0;
+			ofTypes[tagName] = par.childNodes.filter(n => {
+				if (n.tagName == tagName) {
+					n._typeIdx = typeIdx++;
+					return true;
+				}
+			});
+		}
+
+		return ofTypes[tagName];
+	}
+
+	return null;
+}
+
 function build(tokens, each) {
 	let targ = node(null, "root", EMPTY_SET), idx;
 
@@ -136,6 +158,8 @@ function postProc(node, idx, ctx) {
 	// append to flat node list
 	ctx.nodes.push(node);
 }
+
+exports.getSibsOfType = getSibsOfType;
 
 exports.parse = html => {
 	html = html.replace(NASTIES, '');

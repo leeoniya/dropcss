@@ -93,6 +93,28 @@ function node(parent, tagName, attrs) {
 	};
 }
 
+// adds ._ofTypes: {<tagName>: [...]} to parent
+// adds ._typeIdx to childNodes
+function getSibsOfType(par, tagName) {
+	if (par != null) {
+		var ofTypes = (par._ofTypes = par._ofTypes || {});
+
+		if (!(tagName in ofTypes)) {
+			var typeIdx = 0;
+			ofTypes[tagName] = par.childNodes.filter(function (n) {
+				if (n.tagName == tagName) {
+					n._typeIdx = typeIdx++;
+					return true;
+				}
+			});
+		}
+
+		return ofTypes[tagName];
+	}
+
+	return null;
+}
+
 function build(tokens, each) {
 	var targ = node(null, "root", EMPTY_SET), idx;
 
@@ -606,9 +628,11 @@ function find(m, ctx) {
 				val		= m[--ctx.idx];
 
 				var n = ctx.node;
+				var tag = n.tagName;
 				tidx = n.idx;
 				par = n.parentNode;
 				var len = par ? par.childNodes.length : 1;
+				var tsibs = (void 0);
 
 				switch (name) {
 					case 'not':
@@ -628,6 +652,26 @@ function find(m, ctx) {
 						break;
 					case 'nth-last-child':
 						res = _nthChild(len - tidx, val);
+						break;
+					case 'first-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = n._typeIdx == 0;
+						break;
+					case 'last-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = n._typeIdx == tsibs.length - 1;
+						break;
+					case 'only-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = tsibs.length == 1;
+						break;
+					case 'nth-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = _nthChild(n._typeIdx + 1, val);
+						break;
+					case 'nth-last-of-type':
+						tsibs = getSibsOfType(par, tag);
+						res = _nthChild(tsibs.length - n._typeIdx, val);
 						break;
 				}
 
