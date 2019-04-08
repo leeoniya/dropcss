@@ -15,8 +15,7 @@
 
 	var TAG_OPEN = 1;
 	var ATTRS = 2;
-	var TEXT = 3;
-	var TAG_CLOSE = 4;
+	var TAG_CLOSE = 3;
 
 	var VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
 
@@ -26,11 +25,11 @@
 	var RE = {
 		// TODO: handle self-closed tags <div/> ?
 		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/my,
-		TAG_TEXT: /\s*[^<]*/my,
+		TEXT: /\s*[^<]*/my,
 		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/my,
 	};
 
-	function tokenize(html, keepText) {
+	function tokenize(html) {
 		var pos = 0, m, tokens = [];
 
 		function syncPos(re) {
@@ -71,14 +70,10 @@
 				return;
 			}
 
-			m = RE.TAG_TEXT.exec(html);
+			m = RE.TEXT.exec(html);
 
-			if (m != null) {
-				syncPos(RE.TAG_TEXT);
-
-				if (keepText)
-					{ tokens.push(TEXT, m[0]); }
-			}
+			if (m != null)
+				{ syncPos(RE.TEXT); }
 		}
 
 		while (pos < html.length)
@@ -93,14 +88,12 @@
 
 	// TODO: lazy attrs, classList. then test tagNames first to reduce chance of triggering getters
 	function node(parent, tagName, attrs) {
-		var isText = tagName == '#';
-
 		return {
 			tagName: tagName,
 			attributes: attrs,
-			classList: !isText && attrs != null && attrs.has('class') ? new Set(attrs.get('class').split(/\s+/g)) : EMPTY_SET,
+			classList: attrs != null && attrs.has('class') ? new Set(attrs.get('class').split(/\s+/g)) : EMPTY_SET,
 			parentNode: parent,
-			childNodes: isText ? null : [],
+			childNodes: [],
 		};
 	}
 
@@ -128,11 +121,6 @@
 			//		break;
 				case TAG_CLOSE:
 					targ = targ.parentNode;
-					break;
-				case TEXT:
-					var n = node(targ, '#', EMPTY_SET);
-					targ.childNodes.push(n);
-					each(n, targ.childNodes.length - 1);
 					break;
 			}
 		}
@@ -164,10 +152,10 @@
 		ctx.nodes.push(node);
 	}
 
-	var _export_parse_ = function (html, pruneText) {
+	var _export_parse_ = function (html) {
 		html = html.replace(NASTIES, '');
 
-		var tokens = tokenize(html, !pruneText);
+		var tokens = tokenize(html);
 
 		var ctx = {
 			nodes: [],
