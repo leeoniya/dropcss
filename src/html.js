@@ -1,3 +1,5 @@
+"use strict";
+
 const TAG_OPEN = 1;
 const ATTRS = 2;
 const TAG_CLOSE = 3;

@@ -1,3 +1,5 @@
+"use strict";
+
 const matches = require('./matches');
 const { getSibsOfType } = require('./html');
 

@@ -1,3 +1,5 @@
+"use strict";
+
 // adapted from https://github.com/fb55/nth-check/blob/master/compile.js
 
 // https://css-tricks.com/how-nth-child-works/

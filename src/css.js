@@ -1,3 +1,5 @@
+"use strict";
+
 const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
 const COMBINATORS = /\s*[>~+]\s*|\s+/g;
 

@@ -1,3 +1,5 @@
+"use strict";
+
 const { parse: parseHTML } = require('./html');
 const { parse: parseCSS, generate: generateCSS, SELECTORS, takeUntilMatchedClosing } = require('./css');
 const { some } = require('./sel');

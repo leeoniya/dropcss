@@ -1,3 +1,5 @@
+"use strict";
+
 const { nth } = require('./nth');
 
 function matchesType(el, name) {
