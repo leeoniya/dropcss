@@ -582,6 +582,8 @@
 
 	// DRYed out nth-child/nth-last-child logic
 	function _nthChild(pos, val) {
+		var res;
+
 		if (val == 'odd')
 			{ res = pos % 2 == 1; }
 		else if (val == 'even')

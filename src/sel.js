@@ -124,6 +124,8 @@ function parseNth(expr) {
 
 // DRYed out nth-child/nth-last-child logic
 function _nthChild(pos, val) {
+	let res;
+
 	if (val == 'odd')
 		res = pos % 2 == 1;
 	else if (val == 'even')
