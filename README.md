@@ -132,45 +132,45 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
         <tr>
             <th><strong>DropCSS</strong></th>
             <td>
-				52.6 KB<br>
-				6 files, 1 Folders
+				58.4 KB<br>
+				6 Files, 2 Folders
             </td>
             <td>6.58 KB</td>
             <td>76.15%</td>
-            <td>20ms</td>
+            <td>21 ms</td>
             <td>575 / 8.5%</td>
         </tr>
         <tr>
             <th><a href="https://github.com/uncss/uncss">UnCSS</a></th>
             <td>
-                13.7 MB<br>
-                2,831 Files, 301 Folders
+                13.5 MB<br>
+                2,829 Files, 301 Folders
             </td>
             <td>6.72 KB</td>
             <td>75.71%</td>
-            <td>409ms</td>
+            <td>385 ms</td>
             <td>638 / 9.3%</td>
         </tr>
         <tr>
             <th><a href="https://github.com/FullHuman/purgecss">Purgecss</a></th>
             <td>
-                2.53 MB<br>
-                513 Files, 110 Folders
+                2.69 MB<br>
+                560 Files, 119 Folders
             </td>
             <td>8.01 KB</td>
             <td>71.05%</td>
-            <td>79ms</td>
+            <td>88 ms</td>
             <td>1,806 / 22.0%</td>
         </tr>
         <tr>
             <th><a href="https://github.com/purifycss/purifycss">PurifyCSS</a></th>
             <td>
-                3.45 MB<br>
-                791 Files, 207 Folders
+                3.46 MB<br>
+                792 Files, 207 Folders
             </td>
             <td>15.46 KB</td>
             <td>44.34%</td>
-            <td>179ms</td>
+            <td>173 ms</td>
             <td>9,440 / 59.6%</td>
         </tr>
     </tbody>
