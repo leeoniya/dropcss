@@ -4,7 +4,7 @@
 *
 * dropcss.js (DropCSS)
 * An exceptionally fast, thorough and tiny unused-CSS cleaner
-* https://github.com/leeoniya/dropcss (v1.0.0)
+* https://github.com/leeoniya/dropcss (v1.0.1)
 */
 
 (function (global, factory) {
@@ -783,7 +783,14 @@
 
 		while (m = RE2.exec(css)) {
 			m[1].trim().split(",").forEach(function (a) {
-				used.add(a.trim().match(/^[\w-]+/)[0]);
+				a = a.trim();
+
+				var keyFramesName = a.match(/^\S+/)[0];
+
+				if (/^-?[\d.]+m?s/.test(keyFramesName))
+					{ keyFramesName = a.match(/\S+$/)[0]; }
+
+				used.add(keyFramesName);
 			});
 		}
 

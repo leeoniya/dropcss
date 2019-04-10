@@ -50,7 +50,14 @@ function dropKeyFrames(css) {
 
 	while (m = RE2.exec(css)) {
 		m[1].trim().split(",").forEach(a => {
-			used.add(a.trim().match(/^[\w-]+/)[0]);
+			a = a.trim();
+
+			let keyFramesName = a.match(/^\S+/)[0];
+
+			if (/^-?[\d.]+m?s/.test(keyFramesName))
+				keyFramesName = a.match(/\S+$/)[0];
+
+			used.add(keyFramesName);
 		});
 	}
 
