@@ -185,6 +185,45 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
 A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/bench)** is also available.
 
 ---
+### JavaScript Execution
+
+DropCSS does not load external resources or execute `<script>` tags, so your HTML must be fully formed (or SSR'd). Alternatively, you can use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and a local http server to get full `<script>` execution.
+
+[Here's a 30 line script](/demos/puppeteer/index.js) which does exactly that:
+
+```js
+const httpServer = require('http-server');
+const puppeteer = require('puppeteer');
+const fetch = require('node-fetch');
+const dropcss = require('dropcss');
+
+const server = httpServer.createServer({root: './www'});
+server.listen(8080);
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto('http://127.0.0.1:8080/index.html');
+    const html = await page.content();
+    const styleHrefs = await page.$$eval('link[rel=stylesheet]', els => Array.from(els).map(s => s.href));
+    await browser.close();
+
+    await Promise.all(styleHrefs.map(href =>
+        fetch(href).then(r => r.text()).then(css => {
+            let clean = dropcss({
+                css,
+                html,
+            });
+
+            console.log({stylesheet: href, cleanCss: clean.css});
+        })
+    ));
+
+    server.close();
+})();
+```
+
+---
 ### TODO
 
 - Moar tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy to waste a lot of time writing useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
@@ -194,7 +233,6 @@ A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/benc
 
 - Not tested against or designd to handle malformed HTML or CSS
 - Excessive escaping or reserved characters in your HTML or CSS can break DropCSS's parsers
-- There is no processing or execution of `<script>` tags; your HTML must be fully formed (or SSR'd). You should generate and append any additional HTML that you'd want to be considered by DropCSS. If you need JS execution, consider using the larger, slower but still good output, `UnCSS`. Alternatively, [Puppeteer can now output coverage reports](https://www.philkrie.me/2018/07/04/extracting-coverage.html), and there might be tools that utilize this coverage data to clean your CSS, too. DropCSS aims to be minimal, simple and effective.
 
 ---
 ### Acknowledgements
