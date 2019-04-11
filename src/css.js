@@ -151,6 +151,10 @@ function parse(css) {
 	return tokenize(css);
 }
 
+function stripEmptyAts(css) {
+	return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
+}
+
 function generate(tokens) {
 	let out = '', lastSelsLen = 0;
 
@@ -182,10 +186,11 @@ function generate(tokens) {
 	}
 
 	// strip leftover empty @ rules
-	return out.replace(/@[a-z-]+\s+[^{]+\{\s*\}/gm, '');
+	return stripEmptyAts(out);
 }
 
 exports.parse = parse;
 exports.generate = generate;
 exports.SELECTORS = SELECTORS;
 exports.takeUntilMatchedClosing = takeUntilMatchedClosing;
+exports.stripEmptyAts = stripEmptyAts;

@@ -342,6 +342,10 @@
 		return tokenize$1(css);
 	}
 
+	function stripEmptyAts(css) {
+		return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
+	}
+
 	function generate(tokens) {
 		var out = '', lastSelsLen = 0;
 
@@ -373,7 +377,7 @@
 		}
 
 		// strip leftover empty @ rules
-		return out.replace(/@[a-z-]+\s+[^{]+\{\s*\}/gm, '');
+		return stripEmptyAts(out);
 	}
 
 	// adapted from https://github.com/fb55/nth-check/blob/master/compile.js
@@ -942,7 +946,7 @@
 	//	log.forEach(e => console.log(e[0], e[1]));
 
 		return {
-			css: out
+			css: stripEmptyAts(out)
 		};
 	}
 

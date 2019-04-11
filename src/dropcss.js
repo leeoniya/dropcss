@@ -1,7 +1,7 @@
 "use strict";
 
 const { parse: parseHTML } = require('./html');
-const { parse: parseCSS, generate: generateCSS, SELECTORS, takeUntilMatchedClosing } = require('./css');
+const { parse: parseCSS, generate: generateCSS, SELECTORS, takeUntilMatchedClosing, stripEmptyAts } = require('./css');
 const { some, matchesAttr } = require('./find');
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
@@ -224,7 +224,7 @@ function dropcss(opts) {
 //	log.forEach(e => console.log(e[0], e[1]));
 
 	return {
-		css: out
+		css: stripEmptyAts(out)
 	};
 }
 
