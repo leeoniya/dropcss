@@ -262,8 +262,6 @@
 				{ RE[k].lastIndex = pos; }
 		}
 
-
-
 		function next() {
 			if (inAt > 0) {
 				m = RE.AT_TAIL.exec(css);
