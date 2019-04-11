@@ -2,8 +2,7 @@
 
 const { parse: parseHTML } = require('./html');
 const { parse: parseCSS, generate: generateCSS, SELECTORS, takeUntilMatchedClosing } = require('./css');
-const { some } = require('./sel');
-const matches = require('./matches');
+const { some, matchesAttr } = require('./find');
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
@@ -159,7 +158,7 @@ function dropcss(opts) {
 								tested[sub] = hasOne = H.attr.has(sub);
 							else {
 								let m = sub.match(ATTRIBUTES);
-								tested[sub] = hasOne = H.nodes.some(el => matches.attr(el, m[1], m[3], m[2]));
+								tested[sub] = hasOne = H.nodes.some(el => matchesAttr(el, m[1], m[3], m[2]));
 							}
 							break;
 						default:

@@ -432,33 +432,6 @@
 		return pos <= b && pos % a === bMod;
 	}
 
-	function matchesType(el, name) {
-		return name == el.tagName || name == '*';
-	}
-
-	function matchesAttr(el, name, value, matcher) {
-		matcher = matcher || '=';
-
-		var attrs = el.attributes;
-
-		if (attrs.has(name)) {
-			var v = attrs.get(name);
-
-			switch (matcher) {
-				case '=': return value == null || value == v;
-				case '*=': return v.indexOf(value) != -1;
-				case '^=': return v.startsWith(value);
-				case '$=': return v.endsWith(value);
-			}
-		}
-
-		return false;
-	}
-
-	function matchesClass(el, name) {
-		return el.classList.has(name);
-	}
-
 	// assumes stripPseudos(sel); has already been called
 	function parse$1(sel) {
 		var RE = {
@@ -546,13 +519,6 @@
 		return toks;
 	}
 
-	function some(nodes, m) {
-		return nodes.some(function (node) { return find(m, {
-			idx: m.length - 1,
-			node: node
-		}); });
-	}
-
 	var RE_NTH = /^([+-]?\d*)?n([+-]\d+)?$/;
 
 	function parseNth(expr) {
@@ -580,8 +546,35 @@
 		return [0, 0];
 	}
 
+	function matchesType(el, name) {
+		return name == el.tagName || name == '*';
+	}
+
+	function matchesAttr(el, name, value, matcher) {
+		matcher = matcher || '=';
+
+		var attrs = el.attributes;
+
+		if (attrs.has(name)) {
+			var v = attrs.get(name);
+
+			switch (matcher) {
+				case '=': return value == null || value == v;
+				case '*=': return v.indexOf(value) != -1;
+				case '^=': return v.startsWith(value);
+				case '$=': return v.endsWith(value);
+			}
+		}
+
+		return false;
+	}
+
+	function matchesClass(el, name) {
+		return el.classList.has(name);
+	}
+
 	// DRYed out nth-child/nth-last-child logic
-	function _nthChild(pos, val) {
+	function matchesNth(pos, val) {
 		var res;
 
 		if (val == 'odd')
@@ -654,10 +647,10 @@
 							res = len == 1;
 							break;
 						case 'nth-child':
-							res = _nthChild(tidx + 1, val);
+							res = matchesNth(tidx + 1, val);
 							break;
 						case 'nth-last-child':
-							res = _nthChild(len - tidx, val);
+							res = matchesNth(len - tidx, val);
 							break;
 						case 'first-of-type':
 							tsibs = getSibsOfType(par, tag);
@@ -673,11 +666,11 @@
 							break;
 						case 'nth-of-type':
 							tsibs = getSibsOfType(par, tag);
-							res = _nthChild(n._typeIdx + 1, val);
+							res = matchesNth(n._typeIdx + 1, val);
 							break;
 						case 'nth-last-of-type':
 							tsibs = getSibsOfType(par, tag);
-							res = _nthChild(tsibs.length - n._typeIdx, val);
+							res = matchesNth(tsibs.length - n._typeIdx, val);
 							break;
 					}
 
@@ -735,6 +728,14 @@
 
 		return res;
 	}
+
+	function some(nodes, m) {
+		return nodes.some(function (node) { return find(m, {
+			idx: m.length - 1,
+			node: node
+		}); });
+	}
+
 	var _export_some_ = function (nodes, sel) {
 		return some(nodes, Array.isArray(sel) ? sel : parse$1(sel));
 	};
