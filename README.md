@@ -224,6 +224,64 @@ server.listen(8080);
 ```
 
 ---
+### Special / Escaped Sequences
+
+DropCSS is stupid and will choke on unsual selectors, like the ones used by the popular [Tailwind CSS](https://github.com/tailwindcss/tailwindcss) framework:
+
+`class` attributes can look like this:
+
+```html
+<div class="px-6 pt-6 overflow-y-auto text-base lg:text-sm lg:py-12 lg:pl-6 lg:pr-8 sticky?lg:h-(screen-16)"></div>
+<div class="px-2 -mx-2 py-1 transition-fast relative block hover:translate-r-2px hover:text-gray-900 text-gray-600 font-medium"></div>
+```
+
+...and the CSS looks like this:
+
+```css
+.sticky\?lg\:h-\(screen-16\){...}
+.lg\:text-sm{...}
+.lg\:focus\:text-green-700:focus{...}
+```
+
+Ouch.
+
+The solution is to temporarily replace the escaped characters in the HTML and CSS with some unique strings which match `/[\w-]/`. This allows DropCSS's tokenizer to consider the classname as one contiguous thing. After processing, we simply reverse the operation.
+
+```js
+// remap
+let css2 = css
+    .replace(/\\\:/gm, '__0')
+    .replace(/\\\//gm, '__1')
+    .replace(/\\\?/gm, '__2')
+    .replace(/\\\(/gm, '__3')
+    .replace(/\\\)/gm, '__4');
+
+let html2 = html.replace(/class=["'][^"']*["']/gm, m =>
+    m
+    .replace(/\:/gm, '__0')
+    .replace(/\//gm, '__1')
+    .replace(/\?/gm, '__2')
+    .replace(/\(/gm, '__3')
+    .replace(/\)/gm, '__4')
+);
+
+let res = dropcss({
+    css: css2,
+    html: html2,
+});
+
+// undo
+res.css = res.css
+    .replace(/__0/gm, '\\:')
+    .replace(/__1/gm, '\\/')
+    .replace(/__2/gm, '\\?')
+    .replace(/__3/gm, '\\(')
+    .replace(/__4/gm, '\\)');
+```
+
+This performant work-around allows DropCSS to process Tailwind without issues \o/ and is easily adaptable to support other "interesting" cases. One thing to keep in mind is that `shouldDrop()` will be called with selectors containing the temp replacements rather than original selectors, so make sure to account for this if `shouldDrop()` is used to test against some whitelist.
+
+---
 ### TODO
 
 - Moar tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy to waste a lot of time writing useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
