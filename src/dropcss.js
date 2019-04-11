@@ -22,18 +22,20 @@ function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
 }
 
-function removeBackwards(css, defs, used) {
+function removeBackwards(css, defs, used, shouldDrop, type) {
+	type = type || '';
+
 	for (let i = defs.length - 1; i > -1; i--) {
 		let d = defs[i];
 
-		if (!used.has(d[2]))
+		if (!used.has(d[2]) && shouldDrop(type + d[2]) === true)
 			css = splice(css, d[0], d[1], '');
 	}
 
 	return css;
 }
 
-function dropKeyFrames(css) {
+function dropKeyFrames(css, shouldDrop) {
 	let defs = [];
 	let used = new Set();
 
@@ -61,10 +63,10 @@ function dropKeyFrames(css) {
 		});
 	}
 
-	return removeBackwards(css, defs, used);
+	return removeBackwards(css, defs, used, shouldDrop, '@keyframes ');
 }
 
-function dropFontFaces(css) {
+function dropFontFaces(css, shouldDrop) {
 	let defs = [];
 	let used = new Set();
 
@@ -89,7 +91,7 @@ function dropFontFaces(css) {
 		}
 	}
 
-	return removeBackwards(css, defs, used);
+	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 }
 
 const drop = sel => true;
@@ -212,11 +214,11 @@ function dropcss(opts) {
 
 	log.push([+new Date() - START, 'Generate output']);
 
-	out = dropKeyFrames(out);
+	out = dropKeyFrames(out, shouldDrop);
 
 	log.push([+new Date() - START, 'Drop unused @keyframes']);
 
-	out = dropFontFaces(out);
+	out = dropFontFaces(out, shouldDrop);
 
 	log.push([+new Date() - START, 'Drop unused @font-face']);
 

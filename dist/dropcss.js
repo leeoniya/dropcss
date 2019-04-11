@@ -755,18 +755,20 @@
 		return str.slice(0, index) + add + str.slice(index + count);
 	}
 
-	function removeBackwards(css, defs, used) {
+	function removeBackwards(css, defs, used, shouldDrop, type) {
+		type = type || '';
+
 		for (var i = defs.length - 1; i > -1; i--) {
 			var d = defs[i];
 
-			if (!used.has(d[2]))
+			if (!used.has(d[2]) && shouldDrop(type + d[2]) === true)
 				{ css = splice(css, d[0], d[1], ''); }
 		}
 
 		return css;
 	}
 
-	function dropKeyFrames(css) {
+	function dropKeyFrames(css, shouldDrop) {
 		var defs = [];
 		var used = new Set();
 
@@ -794,10 +796,10 @@
 			});
 		}
 
-		return removeBackwards(css, defs, used);
+		return removeBackwards(css, defs, used, shouldDrop, '@keyframes ');
 	}
 
-	function dropFontFaces(css) {
+	function dropFontFaces(css, shouldDrop) {
 		var defs = [];
 		var used = new Set();
 
@@ -822,7 +824,7 @@
 			}
 		}
 
-		return removeBackwards(css, defs, used);
+		return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 	}
 
 	var drop = function (sel) { return true; };
@@ -932,9 +934,9 @@
 
 		var out = generate(tokens);
 
-		out = dropKeyFrames(out);
+		out = dropKeyFrames(out, shouldDrop);
 
-		out = dropFontFaces(out);
+		out = dropFontFaces(out, shouldDrop);
 
 	//	log.forEach(e => console.log(e[0], e[1]));
 
