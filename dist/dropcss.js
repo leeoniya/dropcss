@@ -562,19 +562,28 @@
 		return name == el.tagName || name == '*';
 	}
 
-	function matchesAttr(el, name, value, matcher) {
+	var wordReCache = {};
+
+	function matchesAttr(el, name, selVal, matcher) {
 		matcher = matcher || '=';
 
 		var attrs = el.attributes;
 
 		if (attrs.has(name)) {
-			var v = attrs.get(name);
+			var attrVal = attrs.get(name);
 
 			switch (matcher) {
-				case '=': return value == null || value == v;
-				case '*=': return v.indexOf(value) != -1;
-				case '^=': return v.startsWith(value);
-				case '$=': return v.endsWith(value);
+				case '=': return selVal == null || selVal == attrVal;
+				case '*=': return attrVal.indexOf(selVal) != -1;
+				case '^=': return attrVal.startsWith(selVal);
+				case '$=': return attrVal.endsWith(selVal);
+				case '~=':
+					if (selVal == attrVal)
+						{ return true; }
+
+					wordReCache[selVal] = wordReCache[selVal] || new RegExp('(?:\\s|^)' + selVal + '(?:\\s|$)');
+
+					return wordReCache[selVal].test(attrVal);
 			}
 		}
 

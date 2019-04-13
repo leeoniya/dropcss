@@ -159,6 +159,48 @@ describe('Context-free, unary selector', () => {
 		});
 	});
 
+	describe('[attr~=value]', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	'[foo~=bar] {}',
+			});
+			assert.equal(out, '[foo~=bar]{}');
+		});
+
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar baz"></div>',
+				css:	'[foo~=bar] {}',
+			});
+			assert.equal(out, '[foo~=bar]{}');
+		});
+
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="baz bar"></div>',
+				css:	'[foo~=bar] {}',
+			});
+			assert.equal(out, '[foo~=bar]{}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar-baz"></div>',
+				css:	'[foo~=bar] {}',
+			});
+			assert.equal(out, '');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="baz-bar"></div>',
+				css:	'[foo~=bar] {}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
 	describe(':not(<tag>)', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
