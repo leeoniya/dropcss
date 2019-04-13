@@ -1,11 +1,13 @@
 "use strict";
 
+const { takeUntilMatchedClosing } = require('./css');
+
 // assumes stripPseudos(sel); has already been called
 function parse(sel) {
 	const RE = {
 		IDENT:	/([\w*-]+)/iy,
 		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
-		PSEUDO:	/([\w-]+)(?:\(([^)]*)\))?/iy,
+		PSEUDO: /([\w-]+)(\()?/iy,
 		MODE:	/\s*[:.#\[]\s*/iy,
 		COMB:	/\s*[>~+]\s*|\s+/iy
 	};
@@ -45,10 +47,17 @@ function parse(sel) {
 
 			if (mode == ':') {
 				m = RE.PSEUDO.exec(sel);
+
+				if (m[2] == '(') {
+					let subsel = takeUntilMatchedClosing(sel, RE.PSEUDO.lastIndex, '(', ')');
+					RE.PSEUDO.lastIndex += subsel.length + 1;
+					m[2] = m[1] == 'not' ? parse(subsel) : subsel;
+				}
+
 				toks.splice(
 					lastComb + 1,
 					0,
-					m[2] != null && m[1] == 'not' ? parse(m[2]) : m[2],
+					m[2],
 					m[1],
 					mode
 				);

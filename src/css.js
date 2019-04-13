@@ -38,19 +38,30 @@ function quickSels(selsStr) {
 	return selsArr;
 }
 
+const PSEUDO_PARENTH = /:[a-z-]+\([^()]*\)/;
+
 function stripAllPseudos(sel) {
-	return sel.replace(/:?:[a-z-]+(?:\([^()]+\))?/gm, '');
+	let olen = sel.length;
+
+	for (;;) {
+		sel = sel.replace(PSEUDO_PARENTH, '');
+		if (sel.length == olen)
+			break;
+		olen = sel.length;
+	}
+
+	return sel.replace(/:?:[a-z-]+/gm, '');
 }
 
-// pos must already be past opening {
-function takeUntilMatchedClosing(css, pos) {
+// pos must already be past opening @op
+function takeUntilMatchedClosing(css, pos, op, cl) {
 	let chunk = '';
 	let unclosed = 1;
 
 	while (1) {
-		if (css[pos] == '{')
+		if (css[pos] == op)
 			unclosed++;
-		else if (css[pos] == '}')
+		else if (css[pos] == cl)
 			unclosed--;
 
 		if (unclosed == 0)
@@ -127,7 +138,7 @@ function tokenize(css) {
 				//	case '@counter-style':
 				//	case '@font-feature-values':
 						inAt++;
-						let chunk = takeUntilMatchedClosing(css, pos);
+						let chunk = takeUntilMatchedClosing(css, pos, '{', '}');
 						syncPos({lastIndex: pos + chunk.length});
 						tokens.push(START_AT, pre, AT_CHUNK, chunk);
 						break;

@@ -193,6 +193,24 @@ describe('Context-free, multi selector', () => {
 		});
 	});
 
+	describe('<tag>:not(:nth-child(n+3))', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div><p></p><p></p><p></p><p></p></div>',
+				css:	'p:not(:nth-child(n+3)) {}',
+			});
+			assert.equal(out, 'p:not(:nth-child(n+3)){}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div><i></i><i></i><p></p><p></p></div>',
+				css:	'p:not(:nth-child(n+3)) {}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
 	// TODO: rest that match the non-:not() versions
 
 	// *-child assertions dont make to test in a unary selector since all root elements will be first/last/only "children"

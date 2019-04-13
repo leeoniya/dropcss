@@ -42,7 +42,7 @@ function dropKeyFrames(css, shouldDrop) {
 	let RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
 
 	while (m = RE.exec(css)) {
-		let ch = takeUntilMatchedClosing(css, RE.lastIndex);
+		let ch = takeUntilMatchedClosing(css, RE.lastIndex, '{', '}');
 		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 	}
 

@@ -228,19 +228,30 @@
 		return selsArr;
 	}
 
+	var PSEUDO_PARENTH = /:[a-z-]+\([^()]*\)/;
+
 	function stripAllPseudos(sel) {
-		return sel.replace(/:?:[a-z-]+(?:\([^()]+\))?/gm, '');
+		var olen = sel.length;
+
+		for (;;) {
+			sel = sel.replace(PSEUDO_PARENTH, '');
+			if (sel.length == olen)
+				{ break; }
+			olen = sel.length;
+		}
+
+		return sel.replace(/:?:[a-z-]+/gm, '');
 	}
 
-	// pos must already be past opening {
-	function takeUntilMatchedClosing(css, pos) {
+	// pos must already be past opening @op
+	function takeUntilMatchedClosing(css, pos, op, cl) {
 		var chunk = '';
 		var unclosed = 1;
 
 		while (1) {
-			if (css[pos] == '{')
+			if (css[pos] == op)
 				{ unclosed++; }
-			else if (css[pos] == '}')
+			else if (css[pos] == cl)
 				{ unclosed--; }
 
 			if (unclosed == 0)
@@ -317,7 +328,7 @@
 					//	case '@counter-style':
 					//	case '@font-feature-values':
 							inAt++;
-							var chunk = takeUntilMatchedClosing(css, pos);
+							var chunk = takeUntilMatchedClosing(css, pos, '{', '}');
 							syncPos({lastIndex: pos + chunk.length});
 							tokens.push(START_AT, pre, AT_CHUNK, chunk);
 							break;
@@ -449,7 +460,7 @@
 		var RE = {
 			IDENT:	/([\w*-]+)/iy,
 			ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
-			PSEUDO:	/([\w-]+)(?:\(([^)]*)\))?/iy,
+			PSEUDO: /([\w-]+)(\()?/iy,
 			MODE:	/\s*[:.#\[]\s*/iy,
 			COMB:	/\s*[>~+]\s*|\s+/iy
 		};
@@ -489,10 +500,17 @@
 
 				if (mode$1 == ':') {
 					m = RE.PSEUDO.exec(sel);
+
+					if (m[2] == '(') {
+						var subsel = takeUntilMatchedClosing(sel, RE.PSEUDO.lastIndex, '(', ')');
+						RE.PSEUDO.lastIndex += subsel.length + 1;
+						m[2] = m[1] == 'not' ? parse$1(subsel) : subsel;
+					}
+
 					toks.splice(
 						lastComb + 1,
 						0,
-						m[2] != null && m[1] == 'not' ? parse$1(m[2]) : m[2],
+						m[2],
 						m[1],
 						mode$1
 					);
@@ -795,7 +813,7 @@
 		var RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
 
 		while (m = RE.exec(css)) {
-			var ch = takeUntilMatchedClosing(css, RE.lastIndex);
+			var ch = takeUntilMatchedClosing(css, RE.lastIndex, '{', '}');
 			defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 		}
 
