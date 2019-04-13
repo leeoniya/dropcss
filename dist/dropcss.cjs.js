@@ -558,8 +558,6 @@ function matchesType(el, name) {
 	return name == el.tagName || name == '*';
 }
 
-var wordReCache = {};
-
 function matchesAttr(el, name, selVal, matcher) {
 	matcher = matcher || '=';
 
@@ -573,13 +571,12 @@ function matchesAttr(el, name, selVal, matcher) {
 			case '*=': return attrVal.indexOf(selVal) != -1;
 			case '^=': return attrVal.startsWith(selVal);
 			case '$=': return attrVal.endsWith(selVal);
-			case '~=':
-				if (selVal == attrVal)
-					{ return true; }
-
-				wordReCache[selVal] = wordReCache[selVal] || new RegExp('(?:\\s|^)' + selVal + '(?:\\s|$)');
-
-				return wordReCache[selVal].test(attrVal);
+			case '~=': return (
+				selVal == attrVal ||
+				attrVal.startsWith(selVal + ' ') ||
+				attrVal.endsWith(' ' + selVal) ||
+				attrVal.indexOf(' ' + selVal + ' ') != -1
+			);
 		}
 	}
 
