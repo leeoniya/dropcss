@@ -192,7 +192,7 @@
 	};
 
 	var COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
-	var COMBINATORS = /\s*[>~+]\s*|\s+/g;
+	var COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
 
 	var START_AT = 1;
 	var CLOSE_AT = 2;
@@ -201,19 +201,29 @@
 	var AT_CHUNK = 5;		// for @ blocks that should not be processed
 	//const COMMENT;
 
+
+	// mission: "#a > b.c~g[a='a z'] y>.foo.bar" -> ["#a", "b", ".c", "g", "[a=a z]", "y", ".foo", ".bar"]
 	// selsStr e.g. "table > a, foo.bar"
 	function quickSels(selsStr) {
 		// -> ["table > a", "foo.bar"]
 		var selsArr = selsStr.split(/\s*,\s*/gm);
 
+		var sep = '`';
+
 		// -> ["table > a", "foo.bar", [["table", "a"], ["foo", ".bar"]]]
-		selsArr.push(selsArr.map(function (sel) {
-			return stripAllPseudos(sel).trim()
-			// for quick checks we can actually split input[type=month] into "input [type=month]" and
-			// .foo.bar#moo into ".foo .bar #moo". this way each can be quick-checked without context
-			.replace(/(\.|#|\[)/gm, ' $1').replace(/\]/gm, '] ').trim()
-			.split(COMBINATORS);
-		}));
+		selsArr.push(selsArr.map(function (sel) { return stripAllPseudos(sel)
+			.trim()
+			.replace(COMBINATORS, function (m, i) {
+				m = m.trim();
+				return (
+					i == 0 ? m :
+					m == '.' || m == '#' ? sep + m :
+					m.length <= 1 ? sep :
+					sep + m.replace(/['"]/gm, '')
+				);
+			})
+			.split(/`+/gm); }
+		));
 
 		return selsArr;
 	}

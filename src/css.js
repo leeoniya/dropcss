@@ -1,7 +1,7 @@
 "use strict";
 
 const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
-const COMBINATORS = /\s*[>~+]\s*|\s+/g;
+const COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
 
 const START_AT = 1;
 const CLOSE_AT = 2;
@@ -10,19 +10,30 @@ const PROPERTIES = 4;
 const AT_CHUNK = 5;		// for @ blocks that should not be processed
 //const COMMENT;
 
+
+// mission: "#a > b.c~g[a='a z'] y>.foo.bar" -> ["#a", "b", ".c", "g", "[a=a z]", "y", ".foo", ".bar"]
 // selsStr e.g. "table > a, foo.bar"
 function quickSels(selsStr) {
 	// -> ["table > a", "foo.bar"]
 	let selsArr = selsStr.split(/\s*,\s*/gm);
 
+	let sep = '`';
+
 	// -> ["table > a", "foo.bar", [["table", "a"], ["foo", ".bar"]]]
-	selsArr.push(selsArr.map(sel => {
-		return stripAllPseudos(sel).trim()
-		// for quick checks we can actually split input[type=month] into "input [type=month]" and
-		// .foo.bar#moo into ".foo .bar #moo". this way each can be quick-checked without context
-		.replace(/(\.|#|\[)/gm, ' $1').replace(/\]/gm, '] ').trim()
-		.split(COMBINATORS);
-	}));
+	selsArr.push(selsArr.map(sel =>
+		stripAllPseudos(sel)
+		.trim()
+		.replace(COMBINATORS, (m, i) => {
+			m = m.trim();
+			return (
+				i == 0 ? m :
+				m == '.' || m == '#' ? sep + m :
+				m.length <= 1 ? sep :
+				sep + m.replace(/['"]/gm, '')
+			);
+		})
+		.split(/`+/gm)
+	));
 
 	return selsArr;
 }
