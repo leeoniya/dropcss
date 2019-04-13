@@ -1,6 +1,6 @@
 {
   "name": "dropcss",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An exceptionally fast, thorough and tiny unused-CSS cleaner",
   "main": "./dist/dropcss.cjs.js",
   "scripts": {
