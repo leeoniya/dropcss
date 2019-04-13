@@ -5,11 +5,11 @@ An exceptionally fast, thorough and tiny unused-CSS cleaner _(MIT Licensed)_
 ---
 ### Introduction
 
-DropCSS is an exceptionally fast, thorough and tiny ([~8 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js)) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thus avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues), use a previous, larger and slower [0.3.x version](https://github.com/leeoniya/dropcss/releases) that uses heavier but more compliant parsers, or use an alternative CSS cleaner.
+DropCSS is an exceptionally fast, thorough and tiny ([~8 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js)) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thus avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues).
 
 As a bonus, DropCSS will also remove unused `@keyframes` and `@font-face` blocks - an out-of-scope, purely intra-CSS optimization. Speaking of which, it's a good idea to run your CSS through a structural optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css), [csso](https://github.com/css/csso), [cssnano](https://github.com/cssnano/cssnano) or [crass](https://github.com/mattbasta/crass) to re-group selectors, merge redundant rules, etc. It probably makes sense to do this after DropCSS, which can leave redundant blocks, e.g. `.foo, .bar { color: red; }; .bar { width: 50%; }` -> `.bar { color: red; }; .bar { width: 50%; }` if `.foo` is absent from your markup.
 
-A bit more on this project's backstory & discussions in [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/) and on [Hacker News](https://news.ycombinator.com/item?id=19469080).
+More on this project's backstory & discussions: v0.1.0 alpha: [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/), [Hacker News](https://news.ycombinator.com/item?id=19469080) and v1.0.0 release: [/r/javascript](https://old.reddit.com/r/javascript/comments/bb7im2/dropcss_v100_an_exceptionally_fast_thorough_and/).
 
 ---
 <h3 align="center">Live Demo: <a href="https://codepen.io/leeoniya/pen/LvbRyq">https://codepen.io/leeoniya/pen/LvbRyq</a></h3>
@@ -132,8 +132,8 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
         <tr>
             <th><strong>DropCSS</strong></th>
             <td>
-				58.4 KB<br>
-				6 Files, 2 Folders
+                58.4 KB<br>
+                6 Files, 2 Folders
             </td>
             <td>6.58 KB</td>
             <td>76.15%</td>
@@ -189,7 +189,7 @@ A full **[Stress Test](https://github.com/leeoniya/dropcss/tree/master/test/benc
 
 DropCSS does not load external resources or execute `<script>` tags, so your HTML must be fully formed (or SSR'd). Alternatively, you can use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and a local http server to get full `<script>` execution.
 
-[Here's a 30 line script](/demos/puppeteer/index.js) which does exactly that:
+[Here's a 35 line script](/demos/puppeteer/index.js) which does exactly that:
 
 ```js
 const httpServer = require('http-server');
@@ -210,12 +210,18 @@ server.listen(8080);
 
     await Promise.all(styleHrefs.map(href =>
         fetch(href).then(r => r.text()).then(css => {
+            let start = +new Date();
+
             let clean = dropcss({
                 css,
                 html,
             });
 
-            console.log({stylesheet: href, cleanCss: clean.css});
+            console.log({
+                stylesheet: href,
+                cleanCss: clean.css,
+                elapsed: +new Date() - start,
+            });
         })
     ));
 
@@ -226,7 +232,7 @@ server.listen(8080);
 ---
 ### Special / Escaped Sequences
 
-DropCSS is stupid and will choke on unsual selectors, like the ones used by the popular [Tailwind CSS](https://github.com/tailwindcss/tailwindcss) framework:
+DropCSS is stupid and will choke on unusual selectors, like the ones used by the popular [Tailwind CSS](https://github.com/tailwindcss/tailwindcss) framework:
 
 `class` attributes can look like this:
 
@@ -280,11 +286,6 @@ res.css = res.css
 ```
 
 This performant work-around allows DropCSS to process Tailwind without issues \o/ and is easily adaptable to support other "interesting" cases. One thing to keep in mind is that `shouldDrop()` will be called with selectors containing the temp replacements rather than original selectors, so make sure to account for this if `shouldDrop()` is used to test against some whitelist.
-
----
-### TODO
-
-- Moar tests. DropCSS is currently developed against gigantic blobs of diverse, real-world CSS and HTML. These inputs & outputs are also used for perf testing and regression detection. While not all output was verified by hand (this would be infeasible for giganitic mis-matched HTML/CSS inputs), it was loosely verified against what other cleaners remove and what they leave behind. Writing tests is additonally challenging because the way selectors are drop-tested is optimized to fast-path many cases; a complex-looking test like `.foo > ul + p:not([foo*=bar]):hover` will actually short circuit early if `.foo`, `ul` or `p` are missing from the dom, and will never continue to structural/context or negation assertions. Tests must be carefully written to ensure they hit all the desired paths; it's easy to waste a lot of time writing useless tests that add no value. Unfortunately, even 100% cumulative code coverage of the test suite would only serve as a starting point. Good tests would be a diverse set of real-world inputs and manually verified outputs.
 
 ---
 ### Caveats

@@ -17,12 +17,18 @@ server.listen(8080);
 
 	await Promise.all(styleHrefs.map(href =>
 		fetch(href).then(r => r.text()).then(css => {
+			let start = +new Date();
+
 			let clean = dropcss({
 				css,
 				html,
 			});
 
-			console.log({stylesheet: href, cleanCss: clean.css});
+			console.log({
+				stylesheet: href,
+				cleanCss: clean.css,
+				elapsed: +new Date() - start,
+			});
 		})
 	));
 
