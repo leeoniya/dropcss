@@ -116,7 +116,7 @@
 			return ofTypes[tagName];
 		}
 
-		return null;
+		return [];
 	}
 
 	function build(tokens, each) {
