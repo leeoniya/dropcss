@@ -24,7 +24,7 @@
 	var RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
 	var RE = {
 		// TODO: handle self-closed tags <div/> ?
-		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s+([^>]*))?>\s*/myi,
+		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
 		TEXT: /\s*[^<]*/my,
 		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
 	};
