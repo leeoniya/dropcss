@@ -1,7 +1,7 @@
 "use strict";
 
-const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
-const COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
+const COMMENTS = new RegExp('\\s*\\/\\*[\\s\\S]*?\\*\\/\\s*', 'gm');
+const COMBINATORS = new RegExp('\\s*[>~+.#]\\s*|\\[[^\\]]+\\]|\\s+', 'gm');
 
 const START_AT = 1;
 const CLOSE_AT = 2;
@@ -15,7 +15,7 @@ const AT_CHUNK = 5;		// for @ blocks that should not be processed
 // selsStr e.g. "table > a, foo.bar"
 function quickSels(selsStr) {
 	// -> ["table > a", "foo.bar"]
-	let selsArr = selsStr.split(/\s*,\s*/gm);
+	let selsArr = selsStr.split(new RegExp('\\s*,\\s*', 'gm'));
 
 	let sep = '`';
 
@@ -29,10 +29,10 @@ function quickSels(selsStr) {
 				i == 0 ? m :
 				m == '.' || m == '#' ? sep + m :
 				m.length <= 1 ? sep :
-				sep + m.replace(/['"]/gm, '')
+				sep + m.replace(new RegExp('[\'"]', 'gm'), '')
 			);
 		})
-		.split(/`+/gm)
+		.split(new RegExp('`+'), 'gm')
 	));
 
 	return selsArr;
@@ -50,7 +50,7 @@ function stripAllPseudos(sel) {
 		olen = sel.length;
 	}
 
-	return sel.replace(/:?:[a-z-]+/gm, '');
+	return sel.replace(new RegExp(':?:[a-z-]+', 'gm'), '');
 }
 
 // pos must already be past opening @op
@@ -76,11 +76,11 @@ function takeUntilMatchedClosing(css, pos, op, cl) {
 function tokenize(css) {
 	// TODO: dry out with selector regexes?
 	const RE = {
-		RULE_HEAD:	/\s*([^{;]+?)\s*[{;]\s*/my,
-		RULE_TAIL:	/\s*([^}]*?)\s*\}/my,
-		AT_TAIL:	/\s*\}/my,
-		RULE_FULL:	/\s*([^{]*?)\{([^}]+?)\}/my,
-	//	COMMENT:	/\s*\/\*.*?\*\/\s*/my,
+		RULE_HEAD: new RegExp('\\s*([^{;]+?)\\s*[{;]\\s*', 'my'),
+		RULE_TAIL: new RegExp('\\s*([^}]*?)\\s*\\}', 'my'),
+		AT_TAIL: new RegExp('\\s*\\}', 'my'),
+		RULE_FULL: new RegExp('\\s*([^{]*?)\\{([^}]+?)\\}', 'my'),
+	//	COMMENT: new RegExp('\\s*\\/\\*.*?\\*\\/\\s*', 'my'),
 	};
 
 	let inAt = 0;
@@ -172,7 +172,7 @@ function parse(css) {
 }
 
 function stripEmptyAts(css) {
-	return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
+	return css.replace(new RegExp('@[a-z-]+[^{]+\\{\\s*\\}', 'gm'), '');
 }
 
 function generate(tokens) {

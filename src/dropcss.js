@@ -10,11 +10,11 @@ const pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
 
 function stripNonAssertablePseudos(sel) {
 	// strip pseudo-elements and transient pseudo-classes
-	return sel.replace(/:?:[a-z-]+/gm, (m) =>
+	return sel.replace(new RegExp(':?:[a-z-]+', 'gm'), (m) =>
 		sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m
 	)
 	// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
-	.replace(/:[a-z-]+\(\)/gm, '');
+	.replace(new RegExp(':[a-z-]+\\(\\)', 'gm'), '');
 }
 
 function splice(str, index, count, add) {
@@ -39,7 +39,7 @@ function dropKeyFrames(css, shouldDrop) {
 	let used = new Set();
 
 	// defined
-	let RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
+	let RE = new RegExp('@(?:-\\w+-)?keyframes\\s+([\\w-]+)\\s*\\{', 'gm'), m;
 
 	while (m = RE.exec(css)) {
 		let ch = takeUntilMatchedClosing(css, RE.lastIndex, '{', '}');
@@ -47,7 +47,7 @@ function dropKeyFrames(css, shouldDrop) {
 	}
 
 	// used
-	let RE2 = /animation(?:-name)?:([^;!}]+)/gm;
+	let RE2 = new RegExp('animation(?:-name)?:([^;!}]+)', 'gm');
 
 	while (m = RE2.exec(css)) {
 		m[1].trim().split(",").forEach(a => {
@@ -70,22 +70,22 @@ function dropFontFaces(css, shouldDrop) {
 	let used = new Set();
 
 	// defined
-	let RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+	let RE = new RegExp('@font-face[\\s\\S]+?font-family:\\s*([\'"\\w-]+)[^}]+\\}', 'gm'), m;
 
 	while (m = RE.exec(css)) {
-		let clean = m[1].replace(/['"]/gm, '');
+		let clean = m[1].replace(new RegExp('[\'"]', 'gm'), '');
 		defs.push([m.index, m[0].length, clean]);
 	}
 
 	// used
-	let RE2 = /font-family:([^;!}]+)/gm;
+	let RE2 = new RegExp('font-family:([^;!}]+)', 'gm');
 
 	while (m = RE2.exec(css)) {
 		let inDef = defs.some(d => m.index > d[0] && m.index < d[0] + d[1]);
 
 		if (!inDef) {
 			m[1].trim().split(",").forEach(a => {
-				used.add(a.trim().replace(/['"]/gm, ''));
+				used.add(a.trim().replace(new RegExp('[\'"]', 'gm'), ''));
 			});
 		}
 	}

@@ -7,13 +7,13 @@ const TAG_CLOSE = 3;
 const VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
 
 // doctype, comments, meta, style, link & script tags. TODO: CDATA
-const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
-const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
+const NASTIES = new RegExp('<!doctype[^>]*>|<!--[\\s\\S]*?-->|<script[^>]*>[\\s\\S]*?<\\/script>|<style[^>]*>[\\s\\S]*?<\\/style>|<link[^>]*>|<meta[^>]*>', 'gmi');
+const RE_ATTRS = new RegExp('([\\w-]+)(?:="([^"]*)"|=\'([^\']*)\'|=(\S+))?', 'gm');
 const RE = {
 	// TODO: handle self-closed tags <div/> ?
-	TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
-	TEXT: /\s*[^<]*/my,
-	TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
+	TAG_HEAD: new RegExp('\\s*<([a-z0-9_-]+)(?:\\s*([^>]*))?>\\s*', 'imy'),
+	TEXT: new RegExp('\\s*[^<]*', 'my'),
+	TAG_CLOSE: new RegExp('\\s*<\\/[a-z0-9_-]+>\\s*', 'imy'),
 };
 
 function tokenize(html) {

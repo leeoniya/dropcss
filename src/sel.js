@@ -5,11 +5,11 @@ const { takeUntilMatchedClosing } = require('./css');
 // assumes stripPseudos(sel); has already been called
 function parse(sel) {
 	const RE = {
-		IDENT:	/([\w*-]+)/iy,
-		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
-		PSEUDO: /([\w-]+)(\()?/iy,
-		MODE:	/\s*[:.#\[]\s*/iy,
-		COMB:	/\s*[>~+]\s*|\s+/iy
+		IDENT: new RegExp('([\\w*-]+)', 'iy'),
+		ATTR: new RegExp('([\\w-]+)(?:(.?=)\"?([^\\]]*?)\"?)?\\]', 'iy'),
+		PSEUDO: new RegExp('([\\w-]+)(\\()?', 'iy'),
+		MODE: new RegExp('\\s*[:.#\\[]\\s*', 'iy'),
+		COMB: new RegExp('\\s*[>~+]\\s*|\\s+', 'iy'),
 	};
 
 	let idx = 0;

@@ -20,13 +20,13 @@
 	var VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
 
 	// doctype, comments, meta, style, link & script tags. TODO: CDATA
-	var NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
-	var RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
+	var NASTIES = new RegExp('<!doctype[^>]*>|<!--[\\s\\S]*?-->|<script[^>]*>[\\s\\S]*?<\\/script>|<style[^>]*>[\\s\\S]*?<\\/style>|<link[^>]*>|<meta[^>]*>', 'gmi');
+	var RE_ATTRS = new RegExp('([\\w-]+)(?:="([^"]*)"|=\'([^\']*)\'|=(\S+))?', 'gm');
 	var RE = {
 		// TODO: handle self-closed tags <div/> ?
-		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
-		TEXT: /\s*[^<]*/my,
-		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
+		TAG_HEAD: new RegExp('\\s*<([a-z0-9_-]+)(?:\\s*([^>]*))?>\\s*', 'imy'),
+		TEXT: new RegExp('\\s*[^<]*', 'my'),
+		TAG_CLOSE: new RegExp('\\s*<\\/[a-z0-9_-]+>\\s*', 'imy'),
 	};
 
 	function tokenize(html) {
@@ -191,8 +191,8 @@
 		return ctx;
 	};
 
-	var COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
-	var COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
+	var COMMENTS = new RegExp('\\s*\\/\\*[\\s\\S]*?\\*\\/\\s*', 'gm');
+	var COMBINATORS = new RegExp('\\s*[>~+.#]\\s*|\\[[^\\]]+\\]|\\s+', 'gm');
 
 	var START_AT = 1;
 	var CLOSE_AT = 2;
@@ -206,7 +206,7 @@
 	// selsStr e.g. "table > a, foo.bar"
 	function quickSels(selsStr) {
 		// -> ["table > a", "foo.bar"]
-		var selsArr = selsStr.split(/\s*,\s*/gm);
+		var selsArr = selsStr.split(new RegExp('\\s*,\\s*', 'gm'));
 
 		var sep = '`';
 
@@ -219,10 +219,10 @@
 					i == 0 ? m :
 					m == '.' || m == '#' ? sep + m :
 					m.length <= 1 ? sep :
-					sep + m.replace(/['"]/gm, '')
+					sep + m.replace(new RegExp('[\'"]', 'gm'), '')
 				);
 			})
-			.split(/`+/gm); }
+			.split(new RegExp('`+'), 'gm'); }
 		));
 
 		return selsArr;
@@ -240,7 +240,7 @@
 			olen = sel.length;
 		}
 
-		return sel.replace(/:?:[a-z-]+/gm, '');
+		return sel.replace(new RegExp(':?:[a-z-]+', 'gm'), '');
 	}
 
 	// pos must already be past opening @op
@@ -266,11 +266,11 @@
 	function tokenize$1(css) {
 		// TODO: dry out with selector regexes?
 		var RE = {
-			RULE_HEAD:	/\s*([^{;]+?)\s*[{;]\s*/my,
-			RULE_TAIL:	/\s*([^}]*?)\s*\}/my,
-			AT_TAIL:	/\s*\}/my,
-			RULE_FULL:	/\s*([^{]*?)\{([^}]+?)\}/my,
-		//	COMMENT:	/\s*\/\*.*?\*\/\s*/my,
+			RULE_HEAD: new RegExp('\\s*([^{;]+?)\\s*[{;]\\s*', 'my'),
+			RULE_TAIL: new RegExp('\\s*([^}]*?)\\s*\\}', 'my'),
+			AT_TAIL: new RegExp('\\s*\\}', 'my'),
+			RULE_FULL: new RegExp('\\s*([^{]*?)\\{([^}]+?)\\}', 'my'),
+		//	COMMENT: new RegExp('\\s*\\/\\*.*?\\*\\/\\s*', 'my'),
 		};
 
 		var inAt = 0;
@@ -362,7 +362,7 @@
 	}
 
 	function stripEmptyAts(css) {
-		return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
+		return css.replace(new RegExp('@[a-z-]+[^{]+\\{\\s*\\}', 'gm'), '');
 	}
 
 	function generate(tokens) {
@@ -458,11 +458,11 @@
 	// assumes stripPseudos(sel); has already been called
 	function parse$1(sel) {
 		var RE = {
-			IDENT:	/([\w*-]+)/iy,
-			ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
-			PSEUDO: /([\w-]+)(\()?/iy,
-			MODE:	/\s*[:.#\[]\s*/iy,
-			COMB:	/\s*[>~+]\s*|\s+/iy
+			IDENT: new RegExp('([\\w*-]+)', 'iy'),
+			ATTR: new RegExp('([\\w-]+)(?:(.?=)\"?([^\\]]*?)\"?)?\\]', 'iy'),
+			PSEUDO: new RegExp('([\\w-]+)(\\()?', 'iy'),
+			MODE: new RegExp('\\s*[:.#\\[]\\s*', 'iy'),
+			COMB: new RegExp('\\s*[>~+]\\s*|\\s+', 'iy'),
 		};
 
 		var idx = 0;
@@ -782,10 +782,10 @@
 
 	function stripNonAssertablePseudos(sel) {
 		// strip pseudo-elements and transient pseudo-classes
-		return sel.replace(/:?:[a-z-]+/gm, function (m) { return sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m; }
+		return sel.replace(new RegExp(':?:[a-z-]+', 'gm'), function (m) { return sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m; }
 		)
 		// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
-		.replace(/:[a-z-]+\(\)/gm, '');
+		.replace(new RegExp(':[a-z-]+\\(\\)', 'gm'), '');
 	}
 
 	function splice(str, index, count, add) {
@@ -810,7 +810,7 @@
 		var used = new Set();
 
 		// defined
-		var RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
+		var RE = new RegExp('@(?:-\\w+-)?keyframes\\s+([\\w-]+)\\s*\\{', 'gm'), m;
 
 		while (m = RE.exec(css)) {
 			var ch = takeUntilMatchedClosing(css, RE.lastIndex, '{', '}');
@@ -818,7 +818,7 @@
 		}
 
 		// used
-		var RE2 = /animation(?:-name)?:([^;!}]+)/gm;
+		var RE2 = new RegExp('animation(?:-name)?:([^;!}]+)', 'gm');
 
 		while (m = RE2.exec(css)) {
 			m[1].trim().split(",").forEach(function (a) {
@@ -841,22 +841,22 @@
 		var used = new Set();
 
 		// defined
-		var RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+		var RE = new RegExp('@font-face[\\s\\S]+?font-family:\\s*([\'"\\w-]+)[^}]+\\}', 'gm'), m;
 
 		while (m = RE.exec(css)) {
-			var clean = m[1].replace(/['"]/gm, '');
+			var clean = m[1].replace(new RegExp('[\'"]', 'gm'), '');
 			defs.push([m.index, m[0].length, clean]);
 		}
 
 		// used
-		var RE2 = /font-family:([^;!}]+)/gm;
+		var RE2 = new RegExp('font-family:([^;!}]+)', 'gm');
 
 		while (m = RE2.exec(css)) {
 			var inDef = defs.some(function (d) { return m.index > d[0] && m.index < d[0] + d[1]; });
 
 			if (!inDef) {
 				m[1].trim().split(",").forEach(function (a) {
-					used.add(a.trim().replace(/['"]/gm, ''));
+					used.add(a.trim().replace(new RegExp('[\'"]', 'gm'), ''));
 				});
 			}
 		}
