@@ -84,6 +84,8 @@ function node(parent, tagName, attrs) {
 	};
 }
 
+const EMPTY_ARR = [];
+
 // adds ._ofTypes: {<tagName>: [...]} to parent
 // adds ._typeIdx to childNodes
 function getSibsOfType(par, tagName) {
@@ -103,7 +105,7 @@ function getSibsOfType(par, tagName) {
 		return ofTypes[tagName];
 	}
 
-	return [];
+	return EMPTY_ARR;
 }
 
 function build(tokens, each) {

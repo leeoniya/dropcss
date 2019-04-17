@@ -4,7 +4,7 @@
 *
 * dropcss.js (DropCSS)
 * An exceptionally fast, thorough and tiny unused-CSS cleaner
-* https://github.com/leeoniya/dropcss (v1.0.5)
+* https://github.com/leeoniya/dropcss (v1.0.6-dev)
 */
 
 (function (global, factory) {
@@ -97,6 +97,8 @@
 		};
 	}
 
+	var EMPTY_ARR = [];
+
 	// adds ._ofTypes: {<tagName>: [...]} to parent
 	// adds ._typeIdx to childNodes
 	function getSibsOfType(par, tagName) {
@@ -116,7 +118,7 @@
 			return ofTypes[tagName];
 		}
 
-		return [];
+		return EMPTY_ARR;
 	}
 
 	function build(tokens, each) {
