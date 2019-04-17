@@ -65,6 +65,8 @@ let cleaned = dropcss({
 
 console.log(cleaned.css);
 
+console.log('Selectors: ', cleaned.tokens.filter(Array.isArray).flat());
+
 console.log(dropped);
 ```
 
@@ -221,6 +223,7 @@ server.listen(8080);
             console.log({
                 stylesheet: href,
                 cleanCss: clean.css,
+                cleanSelectors: clean.tokens.filter(Array.isArray).flat(),
                 elapsed: +new Date() - start,
             });
         })

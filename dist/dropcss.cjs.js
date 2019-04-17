@@ -974,7 +974,8 @@ function dropcss(opts) {
 //	log.forEach(e => console.log(e[0], e[1]));
 
 	return {
-		css: stripEmptyAts(out)
+		css: stripEmptyAts(out),
+		tokens: tokens,
 	};
 }
 
