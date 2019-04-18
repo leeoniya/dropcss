@@ -41,14 +41,20 @@ function dropKeyFrames(css, shouldDrop) {
 	// defined
 	let RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
 
+	let infiniteLoop = 0
 	while (m = RE.exec(css)) {
 		let ch = takeUntilMatchedClosing(css, RE.lastIndex, '{', '}');
 		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
+		infiniteLoop++
+		if (infiniteLoop > css.length) {
+			throw new Error('dropKeyFrames looped too much. (loop 1)')
+		}
 	}
 
 	// used
 	let RE2 = /animation(?:-name)?:([^;!}]+)/gm;
 
+	infiniteLoop = 0
 	while (m = RE2.exec(css)) {
 		m[1].trim().split(",").forEach(a => {
 			a = a.trim();
@@ -60,6 +66,10 @@ function dropKeyFrames(css, shouldDrop) {
 
 			used.add(keyFramesName);
 		});
+		infiniteLoop++
+		if (infiniteLoop > css.length) {
+			throw new Error('dropKeyFrames looped too much. (loop 2)')
+		}
 	}
 
 	return removeBackwards(css, defs, used, shouldDrop, '@keyframes ');
@@ -72,14 +82,20 @@ function dropFontFaces(css, shouldDrop) {
 	// defined
 	let RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
 
+	let infiniteLoop = 0
 	while (m = RE.exec(css)) {
 		let clean = m[1].replace(/['"]/gm, '');
 		defs.push([m.index, m[0].length, clean]);
+		infiniteLoop++
+		if (infiniteLoop > css.length) {
+			throw new Error('dropFontFaces looped too much. (loop 1)')
+		}
 	}
 
 	// used
 	let RE2 = /font-family:([^;!}]+)/gm;
 
+	infiniteLoop = 0
 	while (m = RE2.exec(css)) {
 		let inDef = defs.some(d => m.index > d[0] && m.index < d[0] + d[1]);
 
@@ -87,6 +103,10 @@ function dropFontFaces(css, shouldDrop) {
 			m[1].trim().split(",").forEach(a => {
 				used.add(a.trim().replace(/['"]/gm, ''));
 			});
+		}
+		infiniteLoop++
+		if (infiniteLoop > css.length) {
+			throw new Error('dropFontFaces looped too much. (loop 2)')
 		}
 	}
 

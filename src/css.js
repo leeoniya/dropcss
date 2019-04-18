@@ -156,8 +156,16 @@ function tokenize(css) {
 			pos = css.length;
 	}
 
-	while (pos < css.length)
+	let prevPos = pos;
+	while (pos < css.length) {
 		next();
+		if (prevPos === pos) {
+			const snippet = css.substring(Math.min(pos - 10), Math.max(pos + 10, css.length - 1))
+			throw new Error(`css tokenizer stopped advancing at pos ${pos} near "${snippet}"`);
+			break;
+		}
+		prevPos = pos;
+	}
 
 //	const fs = require('fs');
 //	fs.writeFileSync(__dirname + '/tokens.json', JSON.stringify(tokens, null, 2), 'utf8');

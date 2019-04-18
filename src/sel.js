@@ -89,9 +89,14 @@ function parse(sel) {
 
 		return matched;
 	}
-
-	while (idx < sel.length)
+	let prevIdx = idx;
+	while (idx < sel.length) {
 		next();
+		if (prevIdx === idx) {
+			throw new Error(`sel stopped advancing at idx ${idx}`);
+		}
+		prevIdx = idx;
+	}
 
 	return toks;
 }

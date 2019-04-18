@@ -61,7 +61,7 @@ function matchesNth(pos, val) {
 // maybe look at next non-* selector and check it it has any children/desc?
 function find(m, ctx) {
 	let name, val, mat, par, tidx, res;
-
+	let prevIdx = ctx.idx
 	while (ctx.idx > -1) {
 		switch(m[ctx.idx]) {
 			case '_':
@@ -188,6 +188,10 @@ function find(m, ctx) {
 
 		if (!res)
 			break;
+		if (prevIdx === ctx.idx) {
+			throw new Error(`find stopped advancing at idx ${ctx.idx}`)
+		}
+		prevIdx = ctx.idx
 	}
 
 	return res;
