@@ -69,7 +69,6 @@ function tokenize(html) {
 		if (prevPos === pos) {
 			const snippet = html.substring(Math.min(pos - 10), Math.max(pos + 10, html.length - 1))
 			throw new Error(`html tokenizer stopped advancing at pos ${pos} near "${snippet}"`);
-			break;
 		}
 		prevPos = pos;
 	}
