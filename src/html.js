@@ -67,7 +67,7 @@ function tokenize(html) {
 	while (pos < html.length) {
 		next();
 		if (prevPos === pos) {
-			const snippet = html.substring(Math.min(pos - 10), Math.max(pos + 10, html.length - 1))
+			const snippet = html.substring(Math.max(pos - 10, 0), Math.min(pos + 10, html.length - 1))
 			throw new Error(`html tokenizer stopped advancing at pos ${pos} near "${snippet}"`);
 		}
 		prevPos = pos;

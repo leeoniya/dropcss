@@ -160,7 +160,7 @@ function tokenize(css) {
 	while (pos < css.length) {
 		next();
 		if (prevPos === pos) {
-			const snippet = css.substring(Math.min(pos - 10), Math.max(pos + 10, css.length - 1))
+			const snippet = css.substring(Math.max(pos - 10, 0), Math.min(pos + 10, css.length - 1))
 			throw new Error(`css tokenizer stopped advancing at pos ${pos} near "${snippet}"`);
 		}
 		prevPos = pos;
