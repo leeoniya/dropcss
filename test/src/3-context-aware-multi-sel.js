@@ -116,4 +116,22 @@ describe('Context-aware, multi selector', () => {
 			assert.equal(out, '');
 		});
 	});
+
+	describe('<tag> <tag>:not([a]):not([b])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<body><input></body>',
+				css:	"body input:not([type='color']):not([type='checkbox']) {}",
+			});
+			assert.equal(out, "body input:not([type='color']):not([type='checkbox']){}");
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<body><input type="color"></body>',
+				css:	"body input:not([type='color']):not([type='checkbox']) {}",
+			});
+			assert.equal(out, '');
+		});
+	});
 });

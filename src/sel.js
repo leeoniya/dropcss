@@ -6,7 +6,7 @@ const { takeUntilMatchedClosing } = require('./css');
 function parse(sel) {
 	const RE = {
 		IDENT:	/([\w*-]+)/iy,
-		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
+		ATTR:	/([\w-]+)(?:(.?=)["']?([^\]]*?)["']?)?\]/iy,
 		PSEUDO: /([\w-]+)(\()?/iy,
 		MODE:	/\s*[:.#\[]\s*/iy,
 		COMB:	/\s*[>~+]\s*|\s+/iy
@@ -36,7 +36,7 @@ function parse(sel) {
 
 			toks.push(mode);
 			setIdx(RE.COMB);
-			lastComb = idx;
+			lastComb = toks.length - 1;
 		}
 		else if (m = RE.MODE.exec(sel)) {
 			matched = true;

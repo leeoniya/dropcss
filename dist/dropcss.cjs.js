@@ -457,7 +457,7 @@ function nth(a, b, pos) {
 function parse$1(sel) {
 	var RE = {
 		IDENT:	/([\w*-]+)/iy,
-		ATTR:	/([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/iy,
+		ATTR:	/([\w-]+)(?:(.?=)["']?([^\]]*?)["']?)?\]/iy,
 		PSEUDO: /([\w-]+)(\()?/iy,
 		MODE:	/\s*[:.#\[]\s*/iy,
 		COMB:	/\s*[>~+]\s*|\s+/iy
@@ -487,7 +487,7 @@ function parse$1(sel) {
 
 			toks.push(mode);
 			setIdx(RE.COMB);
-			lastComb = idx;
+			lastComb = toks.length - 1;
 		}
 		else if (m = RE.MODE.exec(sel)) {
 			matched = true;
