@@ -1,5 +1,7 @@
 "use strict";
 
+const { parseErr } = require('./err');
+
 const TAG_OPEN = 1;
 const ATTRS = 2;
 const TAG_CLOSE = 3;
@@ -63,8 +65,16 @@ function tokenize(html) {
 			syncPos(RE.TEXT);
 	}
 
-	while (pos < html.length)
+	let prevPos = pos;
+
+	while (pos < html.length) {
 		next();
+
+		if (prevPos === pos)
+			parseErr('html', html, pos);
+
+		prevPos = pos;
+	}
 
 	syncPos({lastIndex: 0});
 

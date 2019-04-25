@@ -9,6 +9,10 @@
 
 'use strict';
 
+function parseErr(srcType, srcStr, pos) {
+	throw new Error(srcType + ' parser stopped here: "' + srcStr.substring(pos, pos + 100) + '"');
+}
+
 var TAG_OPEN = 1;
 var ATTRS = 2;
 var TAG_CLOSE = 3;
@@ -72,8 +76,16 @@ function tokenize(html) {
 			{ syncPos(RE.TEXT); }
 	}
 
-	while (pos < html.length)
-		{ next(); }
+	var prevPos = pos;
+
+	while (pos < html.length) {
+		next();
+
+		if (prevPos === pos)
+			{ parseErr('html', html, pos); }
+
+		prevPos = pos;
+	}
 
 	syncPos({lastIndex: 0});
 
@@ -344,8 +356,16 @@ function tokenize$1(css) {
 			{ pos = css.length; }
 	}
 
-	while (pos < css.length)
-		{ next(); }
+	var prevPos = pos;
+
+	while (pos < css.length) {
+		next();
+
+		if (prevPos === pos)
+			{ parseErr('css', css, pos); }
+
+		prevPos = pos;
+	}
 
 //	const fs = require('fs');
 //	fs.writeFileSync(__dirname + '/tokens.json', JSON.stringify(tokens, null, 2), 'utf8');

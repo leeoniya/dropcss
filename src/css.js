@@ -1,5 +1,7 @@
 "use strict";
 
+const { parseErr } = require('./err');
+
 const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
 const COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
 
@@ -156,8 +158,16 @@ function tokenize(css) {
 			pos = css.length;
 	}
 
-	while (pos < css.length)
+	let prevPos = pos;
+
+	while (pos < css.length) {
 		next();
+
+		if (prevPos === pos)
+			parseErr('css', css, pos);
+
+		prevPos = pos;
+	}
 
 //	const fs = require('fs');
 //	fs.writeFileSync(__dirname + '/tokens.json', JSON.stringify(tokens, null, 2), 'utf8');
