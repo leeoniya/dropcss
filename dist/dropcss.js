@@ -27,9 +27,9 @@
 	var NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
 	var RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
 	var RE = {
-		TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
+		TAG_HEAD: /\s*<([\w-]+)(?:\s*([^>]*))?>\s*/myi,
 		TEXT: /\s*[^<]*/my,
-		TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
+		TAG_CLOSE: /\s*<\/[\w-]+>\s*/myi,
 	};
 
 	function tokenize(html) {

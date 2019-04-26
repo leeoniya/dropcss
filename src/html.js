@@ -12,9 +12,9 @@ const VOIDS = new Set("area base br col command embed hr img input keygen link m
 const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
 const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
 const RE = {
-	TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
+	TAG_HEAD: /\s*<([\w-]+)(?:\s*([^>]*))?>\s*/myi,
 	TEXT: /\s*[^<]*/my,
-	TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
+	TAG_CLOSE: /\s*<\/[\w-]+>\s*/myi,
 };
 
 function tokenize(html) {
