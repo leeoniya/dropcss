@@ -12,7 +12,6 @@ const VOIDS = new Set("area base br col command embed hr img input keygen link m
 const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
 const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
 const RE = {
-	// TODO: handle self-closed tags <div/> ?
 	TAG_HEAD: /\s*<([a-z0-9_-]+)(?:\s*([^>]*))?>\s*/myi,
 	TEXT: /\s*[^<]*/my,
 	TAG_CLOSE: /\s*<\/[a-z0-9_-]+>\s*/myi,
@@ -53,7 +52,7 @@ function tokenize(html) {
 				tokens.push(ATTRS, attrMap);
 			}
 
-			if (VOIDS.has(tag))
+			if (VOIDS.has(tag) || attrs && attrs.endsWith("/"))
 				tokens.push(TAG_CLOSE);
 
 			return;
