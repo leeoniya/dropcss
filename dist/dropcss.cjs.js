@@ -382,7 +382,7 @@ function stripEmptyAts(css) {
 	return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
 }
 
-function generate(tokens) {
+function generate(tokens, kept) {
 	var out = '', lastSelsLen = 0;
 
 	for (var i = 0; i < tokens.length; i++) {
@@ -393,8 +393,10 @@ function generate(tokens) {
 				var sels = tokens[++i];
 				lastSelsLen = sels.length;
 
-				if (lastSelsLen > 0)
-					{ out += sels.join(); }
+				if (lastSelsLen > 0) {
+					sels.forEach(function (s) { return kept.add(s); });
+					out += sels.join();
+				}
 				break;
 			case PROPERTIES:
 				if (lastSelsLen > 0)
@@ -986,7 +988,9 @@ function dropcss(opts) {
 		}
 	}
 
-	var out = generate(tokens);
+	var kept = new Set();
+
+	var out = generate(tokens, kept);
 
 	out = dropKeyFrames(out, shouldDrop);
 
@@ -995,7 +999,8 @@ function dropcss(opts) {
 //	log.forEach(e => console.log(e[0], e[1]));
 
 	return {
-		css: stripEmptyAts(out)
+		css: stripEmptyAts(out),
+		sels: kept,
 	};
 }
 

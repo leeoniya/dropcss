@@ -209,7 +209,9 @@ function dropcss(opts) {
 
 	log.push([+new Date() - START, 'Context-aware second pass']);
 
-	let out = generateCSS(tokens);
+	let kept = new Set();
+
+	let out = generateCSS(tokens, kept);
 
 	log.push([+new Date() - START, 'Generate output']);
 
@@ -224,7 +226,8 @@ function dropcss(opts) {
 //	log.forEach(e => console.log(e[0], e[1]));
 
 	return {
-		css: stripEmptyAts(out)
+		css: stripEmptyAts(out),
+		sels: kept,
 	};
 }
 
