@@ -7,7 +7,7 @@ An exceptionally fast, thorough and tiny unused-CSS cleaner _(MIT Licensed)_
 
 DropCSS is an exceptionally fast, thorough and tiny ([~9 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js)) unused-CSS cleaner; it takes your HTML and CSS as input and returns only the used CSS as output. Its custom HTML and CSS parsers are highly optimized for the 99% use case and thus avoid the overhead of handling malformed markup or stylesheets, so you must provide well-formed input. There is minimal handling for complex escaping rules, so there will always exist cases of valid input that cannot be processed by DropCSS; for these infrequent cases, please [start a discussion](https://github.com/leeoniya/dropcss/issues).
 
-As a bonus, DropCSS will also remove unused `@keyframes` and `@font-face` blocks - an out-of-scope, purely intra-CSS optimization. Speaking of which, it's a good idea to run your CSS through a structural optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css), [csso](https://github.com/css/csso), [cssnano](https://github.com/cssnano/cssnano) or [crass](https://github.com/mattbasta/crass) to re-group selectors, merge redundant rules, etc. It probably makes sense to do this after DropCSS, which can leave redundant blocks, e.g. `.foo, .bar { color: red; }; .bar { width: 50%; }` -> `.bar { color: red; }; .bar { width: 50%; }` if `.foo` is absent from your markup.
+As a bonus, DropCSS will also remove unused `@keyframes` and `@font-face` blocks - an out-of-scope, purely intra-CSS optimization. Speaking of which, it's a good idea to run your CSS through a structural optimizer like [clean-css](https://github.com/jakubpawlowicz/clean-css), [csso](https://github.com/css/csso), [cssnano](https://github.com/cssnano/cssnano) or [crass](https://github.com/mattbasta/crass) to re-group selectors, merge redundant rules, etc. It probably makes sense to do this after DropCSS, which can leave redundant blocks, e.g. `.foo, .bar { color: red; } .bar { width: 50%; }` -> `.bar { color: red; } .bar { width: 50%; }` if `.foo` is absent from your markup.
 
 More on this project's backstory & discussions: v0.1.0 alpha: [/r/javascript](https://old.reddit.com/r/javascript/comments/b3mcu8/dropcss_010_a_minimal_and_thorough_unused_css/), [Hacker News](https://news.ycombinator.com/item?id=19469080) and v1.0.0 release: [/r/javascript](https://old.reddit.com/r/javascript/comments/bb7im2/dropcss_v100_an_exceptionally_fast_thorough_and/).
 
@@ -228,6 +228,84 @@ server.listen(8080);
 
     server.close();
 })();
+```
+
+---
+### Accumulating a Whitelist
+
+Perhaps you want to take one giant CSS file and purge it against multiple HTML sources, thus retaining any selectors that appear in any HTML source. This also applies when using Puppeteer to invoke different application states to ensure that DropCSS takes every provided application state into account before cleaning the CSS. The idea is rather simple:
+
+1. Run DropCSS against each HTML source.
+2. Accumulate a whitelist from each result.
+3. Run DropCSS against an empty HTML string, relying only on the accumulated whitelist.
+
+See [/demos/accumulate.js](/demos/accumulate.js):
+
+```js
+const dropcss = require('dropcss');
+
+// super mega-huge combined stylesheet
+let css = `
+    em {
+        color: red;
+    }
+
+    p {
+        font-weight: bold;
+    }
+
+    .foo {
+        font-size: 10pt;
+    }
+`;
+
+// html of page (or state) A
+let htmlA = `
+    <html>
+        <head></head>
+        <body>
+            <em>Hello World!</em>
+        </body>
+    </html>
+`;
+
+// html of page (or state) B
+let htmlB = `
+    <html>
+        <head></head>
+        <body>
+            <p>Soft Kitties!</p>
+        </body>
+    </html>
+`;
+
+// whitelist
+let whitelist = new Set();
+
+let resA = dropcss({
+    css,
+    html: htmlA,
+});
+
+// accumulate retained A selectors
+resA.sels.forEach(sel => whitelist.add(sel));
+
+let resB = dropcss({
+    css,
+    html: htmlB,
+});
+
+// accumulate retained B selectors
+resB.sels.forEach(sel => whitelist.add(sel));
+
+// final purge relying only on accumulated whitelist
+let cleaned = dropcss({
+    html: '',
+    css,
+    shouldDrop: sel => !whitelist.has(sel),
+});
+
+console.log(cleaned.css);
 ```
 
 ---
