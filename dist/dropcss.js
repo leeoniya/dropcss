@@ -883,6 +883,14 @@
 			}
 		}
 
+		var RE3 = /font:([^;!}]+)/gm;
+
+		while (m = RE3.exec(css)) {
+			m[1].trim().split(",").forEach(function (a) {
+				used.add(a.trim().match(/\s*['"]?([\w- ]+)['"]?$/)[1]);
+			});
+		}
+
 		return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 	}
 
