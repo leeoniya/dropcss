@@ -70,11 +70,10 @@ function dropFontFaces(css, shouldDrop) {
 	let used = new Set();
 
 	// defined
-	let RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+	let RE = /@font-face[\s\S]+?font-family:\s*['"]?([\w- ]+)['"]?[^}]+\}/gm, m;
 
 	while (m = RE.exec(css)) {
-		let clean = m[1].replace(/['"]/gm, '');
-		defs.push([m.index, m[0].length, clean]);
+		defs.push([m.index, m[0].length, m[1]]);
 	}
 
 	// used

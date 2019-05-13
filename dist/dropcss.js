@@ -4,7 +4,7 @@
 *
 * dropcss.js (DropCSS)
 * An exceptionally fast, thorough and tiny unused-CSS cleaner
-* https://github.com/leeoniya/dropcss (v1.0.7)
+* https://github.com/leeoniya/dropcss (v1.0.8-dev)
 */
 
 (function (global, factory) {
@@ -864,11 +864,10 @@
 		var used = new Set();
 
 		// defined
-		var RE = /@font-face[\s\S]+?font-family:\s*(['"\w-]+)[^}]+\}/gm, m;
+		var RE = /@font-face[\s\S]+?font-family:\s*['"]?([\w- ]+)['"]?[^}]+\}/gm, m;
 
 		while (m = RE.exec(css)) {
-			var clean = m[1].replace(/['"]/gm, '');
-			defs.push([m.index, m[0].length, clean]);
+			defs.push([m.index, m[0].length, m[1]]);
 		}
 
 		// used
