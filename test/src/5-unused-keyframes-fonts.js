@@ -58,17 +58,17 @@ describe('Unused @keyframes and @font-face', () => {
 	});
 
 	describe('@font-face', () => {
-		let css = "div{color: red;}@font-face{font-family: 'MyWebFont';}span{color: black;}";
+		let css = "div{color: red;}@font-face{font-family: 'Open Sans';}span{color: black;}";
 		let fontUse = "";
 
 		it('should retain if used', function() {
-			let prepend = "div{font-family: 'MyWebFont', Fallback, sans-serif;}";
+			let prepend = "div{font-family: 'Open Sans', Fallback, sans-serif;}";
 
 			let {css: out} = dropcss({
 				html:	'<div></div>',
 				css:	prepend + css,
 			});
-			assert.equal(out, prepend + "div{color: red;}@font-face{font-family: 'MyWebFont';}");
+			assert.equal(out, prepend + "div{color: red;}@font-face{font-family: 'Open Sans';}");
 		});
 
 		it('should drop if unused', function() {
