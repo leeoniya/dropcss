@@ -34,6 +34,19 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
+function resolveCustomProps(css) {
+	let defs = {};
+
+	let RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm, m;
+
+	while (m = RE.exec(css))
+		defs[m[1]] = m[2];
+
+	let RE2 = /var\(([\w-]+)\)/gm;
+
+	return css.replace(RE2, (m, m1) => defs[m1]);
+}
+
 function dropKeyFrames(css, shouldDrop) {
 	let defs = [];
 	let used = new Set();
@@ -46,10 +59,12 @@ function dropKeyFrames(css, shouldDrop) {
 		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 	}
 
+	let css2 = resolveCustomProps(css);
+
 	// used
 	let RE2 = /animation(?:-name)?:([^;!}]+)/gm;
 
-	while (m = RE2.exec(css)) {
+	while (m = RE2.exec(css2)) {
 		m[1].trim().split(",").forEach(a => {
 			a = a.trim();
 
@@ -76,10 +91,12 @@ function dropFontFaces(css, shouldDrop) {
 		defs.push([m.index, m[0].length, m[1]]);
 	}
 
+	let css2 = resolveCustomProps(css);
+
 	// used
 	let RE2 = /font-family:([^;!}]+)/gm;
 
-	while (m = RE2.exec(css)) {
+	while (m = RE2.exec(css2)) {
 		let inDef = defs.some(d => m.index > d[0] && m.index < d[0] + d[1]);
 
 		if (!inDef) {
@@ -91,7 +108,7 @@ function dropFontFaces(css, shouldDrop) {
 
 	let RE3 = /font:([^;!}]+)/gm;
 
-	while (m = RE3.exec(css)) {
+	while (m = RE3.exec(css2)) {
 		m[1].trim().split(",").forEach(a => {
 			used.add(a.trim().match(/\s*['"]?([\w- ]+)['"]?$/)[1]);
 		});

@@ -4,7 +4,7 @@
 *
 * dropcss.js (DropCSS)
 * An exceptionally fast, thorough and tiny unused-CSS cleaner
-* https://github.com/leeoniya/dropcss (v1.0.8)
+* https://github.com/leeoniya/dropcss (v1.0.9-dev)
 */
 
 'use strict';
@@ -824,6 +824,19 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
+function resolveCustomProps(css) {
+	var defs = {};
+
+	var RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm, m;
+
+	while (m = RE.exec(css))
+		{ defs[m[1]] = m[2]; }
+
+	var RE2 = /var\(([\w-]+)\)/gm;
+
+	return css.replace(RE2, function (m, m1) { return defs[m1]; });
+}
+
 function dropKeyFrames(css, shouldDrop) {
 	var defs = [];
 	var used = new Set();
@@ -836,10 +849,12 @@ function dropKeyFrames(css, shouldDrop) {
 		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 	}
 
+	var css2 = resolveCustomProps(css);
+
 	// used
 	var RE2 = /animation(?:-name)?:([^;!}]+)/gm;
 
-	while (m = RE2.exec(css)) {
+	while (m = RE2.exec(css2)) {
 		m[1].trim().split(",").forEach(function (a) {
 			a = a.trim();
 
@@ -866,10 +881,12 @@ function dropFontFaces(css, shouldDrop) {
 		defs.push([m.index, m[0].length, m[1]]);
 	}
 
+	var css2 = resolveCustomProps(css);
+
 	// used
 	var RE2 = /font-family:([^;!}]+)/gm;
 
-	while (m = RE2.exec(css)) {
+	while (m = RE2.exec(css2)) {
 		var inDef = defs.some(function (d) { return m.index > d[0] && m.index < d[0] + d[1]; });
 
 		if (!inDef) {
@@ -881,7 +898,7 @@ function dropFontFaces(css, shouldDrop) {
 
 	var RE3 = /font:([^;!}]+)/gm;
 
-	while (m = RE3.exec(css)) {
+	while (m = RE3.exec(css2)) {
 		m[1].trim().split(",").forEach(function (a) {
 			used.add(a.trim().match(/\s*['"]?([\w- ]+)['"]?$/)[1]);
 		});
