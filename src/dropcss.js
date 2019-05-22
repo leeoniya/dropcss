@@ -35,16 +35,22 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 }
 
 function resolveCustomProps(css) {
-	let defs = {};
+	let RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm,
+		RE2 = /var\(([\w-]+)\)/gm;
 
-	let RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm, m;
+	let defs = {}, m;
 
-	while (m = RE.exec(css))
-		defs[m[1]] = m[2];
+	// while var(--*) patterns exist
+	while (RE2.test(css)) {
+		// get all defs
+		while (m = RE.exec(css))
+			defs[m[1]] = m[2];
 
-	let RE2 = /var\(([\w-]+)\)/gm;
+		// replace any non-composites
+		css = css.replace(RE2, (m0, m1) => !RE2.test(defs[m1]) ? defs[m1] : m0);
+	}
 
-	return css.replace(RE2, (m, m1) => defs[m1]);
+	return css;
 }
 
 function dropKeyFrames(css, shouldDrop) {
@@ -87,9 +93,8 @@ function dropFontFaces(css, shouldDrop) {
 	// defined
 	let RE = /@font-face[\s\S]+?font-family:\s*['"]?([\w- ]+)['"]?[^}]+\}/gm, m;
 
-	while (m = RE.exec(css)) {
+	while (m = RE.exec(css))
 		defs.push([m.index, m[0].length, m[1]]);
-	}
 
 	let css2 = resolveCustomProps(css);
 

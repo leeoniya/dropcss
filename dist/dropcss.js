@@ -829,16 +829,22 @@
 	}
 
 	function resolveCustomProps(css) {
-		var defs = {};
+		var RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm,
+			RE2 = /var\(([\w-]+)\)/gm;
 
-		var RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm, m;
+		var defs = {}, m;
 
-		while (m = RE.exec(css))
-			{ defs[m[1]] = m[2]; }
+		// while var(--*) patterns exist
+		while (RE2.test(css)) {
+			// get all defs
+			while (m = RE.exec(css))
+				{ defs[m[1]] = m[2]; }
 
-		var RE2 = /var\(([\w-]+)\)/gm;
+			// replace any non-composites
+			css = css.replace(RE2, function (m0, m1) { return !RE2.test(defs[m1]) ? defs[m1] : m0; });
+		}
 
-		return css.replace(RE2, function (m, m1) { return defs[m1]; });
+		return css;
 	}
 
 	function dropKeyFrames(css, shouldDrop) {
@@ -881,9 +887,8 @@
 		// defined
 		var RE = /@font-face[\s\S]+?font-family:\s*['"]?([\w- ]+)['"]?[^}]+\}/gm, m;
 
-		while (m = RE.exec(css)) {
-			defs.push([m.index, m[0].length, m[1]]);
-		}
+		while (m = RE.exec(css))
+			{ defs.push([m.index, m[0].length, m[1]]); }
 
 		var css2 = resolveCustomProps(css);
 
