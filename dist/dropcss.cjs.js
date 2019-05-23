@@ -795,18 +795,6 @@ var _export_some_ = function (nodes, sel) {
 	return some(nodes, Array.isArray(sel) ? sel : parse$1(sel));
 };
 
-var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
-
-var pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
-
-function stripNonAssertablePseudos(sel) {
-	// strip pseudo-elements and transient pseudo-classes
-	return sel.replace(/:?:[a-z-]+/gm, function (m) { return sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m; }
-	)
-	// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
-	.replace(/:[a-z-]+\(\)/gm, '');
-}
-
 function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
 }
@@ -910,6 +898,18 @@ function dropFontFaces(css, shouldDrop) {
 	}
 
 	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
+}
+
+var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
+
+var pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
+
+function stripNonAssertablePseudos(sel) {
+	// strip pseudo-elements and transient pseudo-classes
+	return sel.replace(/:?:[a-z-]+/gm, function (m) { return sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m; }
+	)
+	// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
+	.replace(/:[a-z-]+\(\)/gm, '');
 }
 
 var drop = function (sel) { return true; };
