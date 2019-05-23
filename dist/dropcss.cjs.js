@@ -812,20 +812,20 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
-function resolveCustomProps(css) {
-	var RE = /(--[\w-]+)\s*:\s*([^;]+)\s*/gm,
-		RE2 = /var\(([\w-]+)\)/gm;
+var CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+)\s*/gm;
+var CUSTOM_PROP_USE = /var\(([\w-]+)\)/gm;
 
+function resolveCustomProps(css) {
 	var defs = {}, m;
 
 	// while var(--*) patterns exist
-	while (RE2.test(css)) {
+	while (CUSTOM_PROP_USE.test(css)) {
 		// get all defs
-		while (m = RE.exec(css))
+		while (m = CUSTOM_PROP_DEF.exec(css))
 			{ defs[m[1]] = m[2]; }
 
 		// replace any non-composites
-		css = css.replace(RE2, function (m0, m1) { return !RE2.test(defs[m1]) ? defs[m1] : m0; });
+		css = css.replace(CUSTOM_PROP_USE, function (m0, m1) { return !CUSTOM_PROP_USE.test(defs[m1]) ? defs[m1] : m0; });
 	}
 
 	return css;
@@ -864,37 +864,57 @@ function dropKeyFrames(css, shouldDrop) {
 	return removeBackwards(css, defs, used, shouldDrop, '@keyframes ');
 }
 
+function cleanFontFam(fontFam) {
+	return fontFam.trim().replace(/'|"/gm, '').split(/\s*,\s*/);
+}
+
 function dropFontFaces(css, shouldDrop) {
-	var defs = [];
-	var used = new Set();
-
 	// defined
-	var RE = /@font-face[\s\S]+?font-family:\s*['"]?([\w- ]+)['"]?[^}]+\}/gm, m;
+	var gm = 'gm',
+		re00 = '@font-face[^}]+\\}+',
+		RE00 = RegExp(re00, gm),
+		m;
 
-	while (m = RE.exec(css))
-		{ defs.push([m.index, m[0].length, m[1]]); }
+	// get all @font-face blocks in original css
+	var defs = [];
 
-	var css2 = resolveCustomProps(css);
+	while (m = RE00.exec(css))
+		{ defs.push([m.index, m[0].length]); }
 
-	// used
-	var RE2 = /font-family:([^;!}]+)/gm;
+	// flatten & remove custom props to ensure no accidental
+	// collisions for regexes, e.g. --font-family:
+	var tcss = resolveCustomProps(css).replace(CUSTOM_PROP_DEF, '');
 
-	while (m = RE2.exec(css2)) {
-		var inDef = defs.some(function (d) { return m.index > d[0] && m.index < d[0] + d[1]; });
+	var re01 = 'font-family:([^;!}]+)',
+		RE01 = RegExp(re01, gm),
+		m2, i = 0;
 
-		if (!inDef) {
-			m[1].trim().split(",").forEach(function (a) {
-				used.add(a.trim().replace(/['"]/gm, ''));
-			});
-		}
+	// get all @font-face blocks in resolved css
+	while (m = RE00.exec(tcss)) {
+		m2 = RE01.exec(m[0]);
+		defs[i++].push(cleanFontFam(m2[1])[0]);
 	}
 
-	var RE3 = /font:([^;!}]+)/gm;
+	// used
+	var used = new Set();
 
-	while (m = RE3.exec(css2)) {
-		m[1].trim().split(",").forEach(function (a) {
-			used.add(a.trim().match(/\s*['"]?([\w- ]+)['"]?$/)[1]);
-		});
+	var RE02 = RegExp(re00 + '|' + re01, gm);
+
+	while (m = RE02.exec(tcss)) {
+		if (m[0][0] !== '@')
+			{ cleanFontFam(m[1]).forEach(function (a) { return used.add(a); }); }
+	}
+
+	var RE03 = /font:([^;!}]+)/gm;
+	var RE04 = /\s*(?:['"][\w- ]+['"]|[\w-]+)\s*(?:,|$)/gm;
+	var t;
+
+	while (m = RE03.exec(tcss)) {
+		t = '';
+		while (m2 = RE04.exec(m[1]))
+			{ t += m2[0]; }
+
+		cleanFontFam(t).forEach(function (a) { return used.add(a); });
 	}
 
 	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');

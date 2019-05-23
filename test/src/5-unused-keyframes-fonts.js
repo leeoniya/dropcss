@@ -72,7 +72,7 @@ describe('Unused @keyframes and @font-face', () => {
 		});
 
 		it('should retain if used (shorthand)', function() {
-			let prepend = "div{font: italic small-caps normal 13px/150% Arial, 'Open Sans', Helvetica, sans-serif;}";
+			let prepend = "div{font: italic small-caps normal 13px Arial, 'Open Sans', Helvetica, sans-serif;}";
 
 			let {css: out} = dropcss({
 				html:	'<div></div>',
