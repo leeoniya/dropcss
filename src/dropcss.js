@@ -3,7 +3,8 @@
 const { parse: parseHTML } = require('./html');
 const { parse: parseCSS, generate: generateCSS, SELECTORS, stripEmptyAts } = require('./css');
 const { some, matchesAttr } = require('./find');
-const { postProc, LOGGING } = require('./extras');
+const { postProc } = require('./postproc');
+const { LOGGING } = require('./env');
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 

@@ -1,6 +1,6 @@
-const { takeUntilMatchedClosing } = require('./css');
+const { LOGGING } = require('./env');
 
-const LOGGING = false;
+const { takeUntilMatchedClosing } = require('./css');
 
 function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
@@ -120,4 +120,3 @@ function postProc(out, shouldDrop, log, START) {
 }
 
 exports.postProc = postProc;
-exports.LOGGING = LOGGING;
