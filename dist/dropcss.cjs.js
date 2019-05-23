@@ -814,6 +814,7 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 
 var CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+)\s*/gm;
 var CUSTOM_PROP_USE = /var\(([\w-]+)\)/gm;
+var COMMA_SPACED = /\s*,\s*/gm;
 
 function resolveCustomProps(css) {
 	var defs = {}, m;
@@ -831,11 +832,10 @@ function resolveCustomProps(css) {
 	return css;
 }
 
-function dropKeyFrames(css, shouldDrop) {
-	var defs = [];
-	var used = new Set();
-
+function dropKeyFrames(css, flatCss, shouldDrop) {
 	// defined
+	var defs = [];
+
 	var RE = /@(?:-\w+-)?keyframes\s+([\w-]+)\s*\{/gm, m;
 
 	while (m = RE.exec(css)) {
@@ -843,15 +843,13 @@ function dropKeyFrames(css, shouldDrop) {
 		defs.push([m.index, m[0].length + ch.length + 1, m[1]]);
 	}
 
-	var css2 = resolveCustomProps(css);
-
 	// used
+	var used = new Set();
+
 	var RE2 = /animation(?:-name)?:([^;!}]+)/gm;
 
-	while (m = RE2.exec(css2)) {
-		m[1].trim().split(",").forEach(function (a) {
-			a = a.trim();
-
+	while (m = RE2.exec(flatCss)) {
+		m[1].trim().split(COMMA_SPACED).forEach(function (a) {
 			var keyFramesName = a.match(/^\S+/)[0];
 
 			if (/^-?[\d.]+m?s/.test(keyFramesName))
@@ -865,10 +863,10 @@ function dropKeyFrames(css, shouldDrop) {
 }
 
 function cleanFontFam(fontFam) {
-	return fontFam.trim().replace(/'|"/gm, '').split(/\s*,\s*/);
+	return fontFam.trim().replace(/'|"/gm, '').split(COMMA_SPACED);
 }
 
-function dropFontFaces(css, shouldDrop) {
+function dropFontFaces(css, flatCss, shouldDrop) {
 	// defined
 	var gm = 'gm',
 		re00 = '@font-face[^}]+\\}+',
@@ -881,16 +879,12 @@ function dropFontFaces(css, shouldDrop) {
 	while (m = RE00.exec(css))
 		{ defs.push([m.index, m[0].length]); }
 
-	// flatten & remove custom props to ensure no accidental
-	// collisions for regexes, e.g. --font-family:
-	var tcss = resolveCustomProps(css).replace(CUSTOM_PROP_DEF, '');
-
 	var re01 = 'font-family:([^;!}]+)',
 		RE01 = RegExp(re01, gm),
 		m2, i = 0;
 
 	// get all @font-face blocks in resolved css
-	while (m = RE00.exec(tcss)) {
+	while (m = RE00.exec(flatCss)) {
 		m2 = RE01.exec(m[0]);
 		defs[i++].push(cleanFontFam(m2[1])[0]);
 	}
@@ -900,7 +894,7 @@ function dropFontFaces(css, shouldDrop) {
 
 	var RE02 = RegExp(re00 + '|' + re01, gm);
 
-	while (m = RE02.exec(tcss)) {
+	while (m = RE02.exec(flatCss)) {
 		if (m[0][0] !== '@')
 			{ cleanFontFam(m[1]).forEach(function (a) { return used.add(a); }); }
 	}
@@ -909,7 +903,7 @@ function dropFontFaces(css, shouldDrop) {
 	var RE04 = /\s*(?:['"][\w- ]+['"]|[\w-]+)\s*(?:,|$)/gm;
 	var t;
 
-	while (m = RE03.exec(tcss)) {
+	while (m = RE03.exec(flatCss)) {
 		t = '';
 		while (m2 = RE04.exec(m[1]))
 			{ t += m2[0]; }
@@ -921,9 +915,16 @@ function dropFontFaces(css, shouldDrop) {
 }
 
 function postProc$1(out, shouldDrop, log, START) {
-	out = dropKeyFrames(out, shouldDrop);
+	// flatten & remove custom props to ensure no accidental
+	// collisions for regexes, e.g. --animation-name: --font-face:
+	// this is used for testing for "used" keyframes and fonts and
+	// parsing resolved 'font-family:' names from @font-face defs,
+	// so does not need to be regenerated during iterative purging
+	var flatCss = resolveCustomProps(out).replace(CUSTOM_PROP_DEF, '');
 
-	out = dropFontFaces(out, shouldDrop);
+	out = dropKeyFrames(out, flatCss, shouldDrop);
+
+	out = dropFontFaces(out, flatCss, shouldDrop);
 
 	return out;
 }
