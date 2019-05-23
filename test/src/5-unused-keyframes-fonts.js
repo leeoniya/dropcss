@@ -91,4 +91,57 @@ describe('Unused @keyframes and @font-face', () => {
 			assert.equal(out, prepend + "div{color: red;}");
 		});
 	});
+
+	describe('@font-face (custom props)', () => {
+		let css = "div{color: red;}:root {--font-family: Foo, 'Bar Baz';}@font-face {font-family: Foo}";
+		let fontUse = "";
+
+		it('should drop if unused (--font-family: should not be confused with font use)', function() {
+			let prepend = "";
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	prepend + css,
+			});
+			assert.equal(out, prepend + "div{color: red;}:root{--font-family: Foo, 'Bar Baz';}");
+		});
+
+		it('should retain if used in font-family:', function() {
+			let prepend = "div{font-family: var(--font-family);}";
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	prepend + css,
+			});
+			assert.equal(out, prepend + "div{color: red;}:root{--font-family: Foo, 'Bar Baz';}@font-face{font-family: Foo}");
+		});
+
+		it('should retain if used (deep resolve)', function() {
+			let css2 = [
+				":root {--font: var(--sty) var(--wgt) 1em/var(--lht) var(--fam1), var(--fam2); --sty: italic; --wgt: bold; --lht: var(--hgt)em; --fam1: 'Open Sans'; --fam2: Arial; --hgt: 1.6;}",
+				"@font-face {font-family: var(--fam1);}",
+				"div {font: var(--font);}",
+			].join("");
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	css2,
+			});
+			assert.equal(out, ":root{--font: var(--sty) var(--wgt) 1em/var(--lht) var(--fam1), var(--fam2); --sty: italic; --wgt: bold; --lht: var(--hgt)em; --fam1: 'Open Sans'; --fam2: Arial; --hgt: 1.6;}@font-face{font-family: var(--fam1);}div{font: var(--font);}");
+		});
+
+		it('should drop if unused (deep resolve)', function() {
+			let css2 = [
+				":root {--font: var(--sty) var(--wgt) 1em/var(--lht) var(--fam1), var(--fam2); --sty: italic; --wgt: bold; --lht: var(--hgt)em; --fam1: 'Open Sans'; --fam2: Arial; --hgt: 1.6;}",
+				"@font-face {font-family: var(--fam1);}",
+			//	"div {font: var(--font);}",
+			].join("");
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	css2,
+			});
+			assert.equal(out, ":root{--font: var(--sty) var(--wgt) 1em/var(--lht) var(--fam1), var(--fam2); --sty: italic; --wgt: bold; --lht: var(--hgt)em; --fam1: 'Open Sans'; --fam2: Arial; --hgt: 1.6;}");
+		});
+	});
 });
