@@ -904,6 +904,14 @@
 		return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 	}
 
+	function postProc$1(out, shouldDrop, log, START) {
+		out = dropKeyFrames(out, shouldDrop);
+
+		out = dropFontFaces(out, shouldDrop);
+
+		return out;
+	}
+
 	var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
 	var pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
@@ -919,6 +927,7 @@
 	var drop = function (sel) { return true; };
 
 	function dropcss(opts) {
+		var log, START;
 
 		// {nodes, tag, class, id}
 		var H = _export_parse_(opts.html, !opts.keepText);
@@ -1025,11 +1034,7 @@
 
 		var out = generate(tokens, kept);
 
-		out = dropKeyFrames(out, shouldDrop);
-
-		out = dropFontFaces(out, shouldDrop);
-
-	//	log.forEach(e => console.log(e[0], e[1]));
+		out = postProc$1(out, shouldDrop, log, START);
 
 		return {
 			css: stripEmptyAts(out),

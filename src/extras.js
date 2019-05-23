@@ -1,5 +1,7 @@
 const { takeUntilMatchedClosing } = require('./css');
 
+const LOGGING = false;
+
 function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
 }
@@ -105,5 +107,17 @@ function dropFontFaces(css, shouldDrop) {
 	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 }
 
-exports.dropKeyFrames = dropKeyFrames;
-exports.dropFontFaces = dropFontFaces;
+function postProc(out, shouldDrop, log, START) {
+	out = dropKeyFrames(out, shouldDrop);
+
+	LOGGING && log.push([+new Date() - START, 'Drop unused @keyframes']);
+
+	out = dropFontFaces(out, shouldDrop);
+
+	LOGGING && log.push([+new Date() - START, 'Drop unused @font-face']);
+
+	return out;
+}
+
+exports.postProc = postProc;
+exports.LOGGING = LOGGING;

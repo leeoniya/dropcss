@@ -3,7 +3,7 @@
 const { parse: parseHTML } = require('./html');
 const { parse: parseCSS, generate: generateCSS, SELECTORS, stripEmptyAts } = require('./css');
 const { some, matchesAttr } = require('./find');
-const { dropKeyFrames, dropFontFaces } = require('./extras');
+const { postProc, LOGGING } = require('./extras');
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
@@ -21,20 +21,23 @@ function stripNonAssertablePseudos(sel) {
 const drop = sel => true;
 
 function dropcss(opts) {
-	let START = +new Date();
+	let log, START;
 
-	let log = [[0, 'Start']];
+	if (LOGGING) {
+		START = +new Date();
+		log = [[0, 'Start']];
+	}
 
 	// {nodes, tag, class, id}
 	const H = parseHTML(opts.html, !opts.keepText);
 
-	log.push([+new Date() - START, 'HTML parsed & processed']);
+	LOGGING && log.push([+new Date() - START, 'HTML parsed & processed']);
 
 	const shouldDrop = opts.shouldDrop || drop;
 
 	let tokens = parseCSS(opts.css);
 
-	log.push([+new Date() - START, 'CSS tokenized']);
+	LOGGING && log.push([+new Date() - START, 'CSS tokenized']);
 
 	// cache
 	let tested = {};
@@ -103,7 +106,7 @@ function dropcss(opts) {
 		}
 	}
 
-	log.push([+new Date() - START, 'Context-free first pass']);
+	LOGGING && log.push([+new Date() - START, 'Context-free first pass']);
 
 	for (let i = 0; i < tokens.length; i++) {
 		let tok = tokens[i];
@@ -132,23 +135,17 @@ function dropcss(opts) {
 		}
 	}
 
-	log.push([+new Date() - START, 'Context-aware second pass']);
+	LOGGING && log.push([+new Date() - START, 'Context-aware second pass']);
 
 	let kept = new Set();
 
 	let out = generateCSS(tokens, kept);
 
-	log.push([+new Date() - START, 'Generate output']);
+	LOGGING && log.push([+new Date() - START, 'Generate output']);
 
-	out = dropKeyFrames(out, shouldDrop);
+	out = postProc(out, shouldDrop, log, START);
 
-	log.push([+new Date() - START, 'Drop unused @keyframes']);
-
-	out = dropFontFaces(out, shouldDrop);
-
-	log.push([+new Date() - START, 'Drop unused @font-face']);
-
-//	log.forEach(e => console.log(e[0], e[1]));
+	LOGGING && log.forEach(e => console.log(e[0], e[1]));
 
 	return {
 		css: stripEmptyAts(out),
