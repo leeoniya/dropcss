@@ -886,6 +886,7 @@ function dropFontFaces(css, flatCss, shouldDrop) {
 	// get all @font-face blocks in resolved css
 	while (m = RE00.exec(flatCss)) {
 		m2 = RE01.exec(m[0]);
+		RE01.lastIndex = 0;
 		defs[i++].push(cleanFontFam(m2[1])[0]);
 	}
 
