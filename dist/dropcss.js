@@ -884,7 +884,7 @@
 			{ defs.push([m.index, m[0].length]); }
 
 		var re01 = 'font-family:([^;!}]+)',
-			RE01 = RegExp(re01, gm),
+			RE01 = RegExp(re01),
 			m2, i = 0;
 
 		// get all @font-face blocks in resolved css

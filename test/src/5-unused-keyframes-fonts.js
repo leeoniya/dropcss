@@ -90,6 +90,16 @@ describe('Unused @keyframes and @font-face', () => {
 			});
 			assert.equal(out, prepend + "div{color: red;}");
 		});
+
+		it('should drop if unused (multiple defs)', function() {
+			let prepend = "@font-face{font-family:MuseoSans;}@font-face{font-family:MuseoSans;}";
+
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	prepend + css,
+			});
+			assert.equal(out, "div{color: red;}");
+		});
 	});
 
 	describe('@font-face (custom props)', () => {
