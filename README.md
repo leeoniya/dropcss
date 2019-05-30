@@ -75,7 +75,8 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
 
 - Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
 - Removal of unused `@font-face` and `@keyframes` blocks.
-- Deep resolution of composite [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/--*), e.g:
+- Removal of unused [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/--*).
+- Deep resolution of composite CSS variables, e.g:
   ```css
   :root {
     --font-style: italic;
