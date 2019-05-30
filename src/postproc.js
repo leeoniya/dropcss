@@ -18,7 +18,7 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
-const CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+)\s*/gm;
+const CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+);?\s*/gm;
 const CUSTOM_PROP_USE = /var\(([\w-]+)\)/gm;
 const COMMA_SPACED = /\s*,\s*/gm;
 
@@ -120,6 +120,17 @@ function dropFontFaces(css, flatCss, shouldDrop) {
 	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 }
 
+function dropCssVars(css, shouldDrop) {
+	let css2 = css;
+
+	do {
+		css = css2;
+		css2 = css.replace(CUSTOM_PROP_DEF, (m, m1) => css.indexOf('var(' + m1 + ')') != -1 ? m : '');
+	} while (css2 != css);
+
+	return css2;
+}
+
 function postProc(out, shouldDrop, log, START) {
 	// flatten & remove custom props to ensure no accidental
 	// collisions for regexes, e.g. --animation-name: --font-face:
@@ -135,6 +146,10 @@ function postProc(out, shouldDrop, log, START) {
 	out = dropFontFaces(out, flatCss, shouldDrop);
 
 	LOGGING && log.push([+new Date() - START, 'Drop unused @font-face']);
+
+	out = dropCssVars(out, shouldDrop);
+
+	LOGGING && log.push([+new Date() - START, 'Drop unused --* props']);
 
 	return out;
 }

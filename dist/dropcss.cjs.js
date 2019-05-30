@@ -812,7 +812,7 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
-var CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+)\s*/gm;
+var CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+);?\s*/gm;
 var CUSTOM_PROP_USE = /var\(([\w-]+)\)/gm;
 var COMMA_SPACED = /\s*,\s*/gm;
 
@@ -914,6 +914,17 @@ function dropFontFaces(css, flatCss, shouldDrop) {
 	return removeBackwards(css, defs, used, shouldDrop, '@font-face ');
 }
 
+function dropCssVars(css, shouldDrop) {
+	var css2 = css;
+
+	do {
+		css = css2;
+		css2 = css.replace(CUSTOM_PROP_DEF, function (m, m1) { return css.indexOf('var(' + m1 + ')') != -1 ? m : ''; });
+	} while (css2 != css);
+
+	return css2;
+}
+
 function postProc$1(out, shouldDrop, log, START) {
 	// flatten & remove custom props to ensure no accidental
 	// collisions for regexes, e.g. --animation-name: --font-face:
@@ -925,6 +936,8 @@ function postProc$1(out, shouldDrop, log, START) {
 	out = dropKeyFrames(out, flatCss, shouldDrop);
 
 	out = dropFontFaces(out, flatCss, shouldDrop);
+
+	out = dropCssVars(out, shouldDrop);
 
 	return out;
 }

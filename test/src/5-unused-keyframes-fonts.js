@@ -113,7 +113,7 @@ describe('Unused @keyframes and @font-face', () => {
 				html:	'<div></div>',
 				css:	prepend + css,
 			});
-			assert.equal(out, prepend + "div{color: red;}:root{--font-family: Foo, 'Bar Baz';}");
+			assert.equal(out, prepend + "div{color: red;}:root{}");
 		});
 
 		it('should retain if used in font-family:', function() {
@@ -151,7 +151,7 @@ describe('Unused @keyframes and @font-face', () => {
 				html:	'<div></div>',
 				css:	css2,
 			});
-			assert.equal(out, ":root{--font: var(--sty) var(--wgt) 1em/var(--lht) var(--fam1), var(--fam2); --sty: italic; --wgt: bold; --lht: var(--hgt)em; --fam1: 'Open Sans'; --fam2: Arial; --hgt: 1.6;}");
+			assert.equal(out, ":root{}");
 		});
 	});
 });
