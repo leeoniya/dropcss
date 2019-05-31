@@ -73,10 +73,17 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
 ---
 ### Features
 
+- Supported selectors
+
+  | Common                                                                                                                                            | Attribute                                                                                    | Positional                                                                                | Positional (of-type)                                                                                | Other    |
+  |---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|----------|
+  | `*` - universal<br>`<tag>` - tag<br>`#` - id<br>`.` - class<br>` ` - descendant<br>`>` - child<br>`+` - adjacent sibling<br>`~` - general sibling | `[attr]`<br>`[attr=val]`<br>`[attr*=val]`<br>`[attr^=val]`<br>`[attr$=val]`<br>`[attr~=val]` | `:first-child`<br>`:last-child`<br>`:only-child`<br>`:nth-child()`<br>`:nth-last-child()` | `:first-of-type`<br>`:last-of-type`<br>`:only-of-type`<br>`:nth-of-type()`<br>`:nth-last-of-type()` | `:not()` |
+
 - Retention of all transient pseudo-class and pseudo-element selectors which cannot be deterministically checked from the parsed HTML.
 - Removal of unused `@font-face` and `@keyframes` blocks.
 - Removal of unused [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/--*).
 - Deep resolution of composite CSS variables, e.g:
+
   ```css
   :root {
     --font-style: italic;
@@ -97,32 +104,6 @@ The `shouldDrop` hook is called for every CSS selector that could not be matched
     font: var(--font);
   }
   ```
-- Supported selectors
-  - `*` - universal
-  - `<tag>` - tag
-  - `#` - id
-  - `.` - class
-  - ` ` - descendant
-  - `>` - child
-  - `+` - adjacent sibling
-  - `~` - general sibling
-  - `[attr]` - attribute
-  - `[attr=val]`
-  - `[attr*=val]`
-  - `[attr^=val]`
-  - `[attr$=val]`
-  - `[attr~=val]`
-  - `:not()`
-  - `:first-child`
-  - `:last-child`
-  - `:only-child`
-  - `:nth-child()`
-  - `:nth-last-child()`
-  - `:first-of-type`
-  - `:last-of-type`
-  - `:only-of-type`
-  - `:nth-of-type()`
-  - `:nth-last-of-type()`
 
 ---
 ### Performance
