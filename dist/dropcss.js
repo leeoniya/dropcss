@@ -943,7 +943,8 @@
 
 		out = dropCssVars(out, shouldDrop);
 
-		return out;
+		// kill any leftover empty blocks e.g. :root {}
+		return out.replace(/[^{}]+\{\s*\}/gm, '');
 	}
 
 	var ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;

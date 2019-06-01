@@ -151,7 +151,8 @@ function postProc(out, shouldDrop, log, START) {
 
 	LOGGING && log.push([+new Date() - START, 'Drop unused --* props']);
 
-	return out;
+	// kill any leftover empty blocks e.g. :root {}
+	return out.replace(/[^{}]+\{\s*\}/gm, '');
 }
 
 exports.postProc = postProc;

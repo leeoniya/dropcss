@@ -8,9 +8,9 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div></div>',
-				css:	'* {}',
+				css:	'* {a:b;}',
 			});
-			assert.equal(out, '*{}');
+			assert.equal(out, '*{a:b;}');
 		});
 	});
 
@@ -18,15 +18,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div></div>',
-				css:	'div {}',
+				css:	'div {a:b;}',
 			});
-			assert.equal(out, 'div{}');
+			assert.equal(out, 'div{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div></div>',
-				css:	'span {}',
+				css:	'span {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -36,15 +36,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div id="a"></div>',
-				css:	'#a {}',
+				css:	'#a {a:b;}',
 			});
-			assert.equal(out, '#a{}');
+			assert.equal(out, '#a{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div id="a"></div>',
-				css:	'#b {}',
+				css:	'#b {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -54,15 +54,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a"></div>',
-				css:	'.a {}',
+				css:	'.a {a:b;}',
 			});
-			assert.equal(out, '.a{}');
+			assert.equal(out, '.a{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a"></div>',
-				css:	'.b {}',
+				css:	'.b {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -72,15 +72,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	'[foo] {}',
+				css:	'[foo] {a:b;}',
 			});
-			assert.equal(out, '[foo]{}');
+			assert.equal(out, '[foo]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	'[bar] {}',
+				css:	'[bar] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -91,15 +91,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo=bar] {}',
+				css:	'[foo=bar] {a:b;}',
 			});
-			assert.equal(out, '[foo=bar]{}');
+			assert.equal(out, '[foo=bar]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo=cow] {}',
+				css:	'[foo=cow] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -109,15 +109,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo*=a] {}',
+				css:	'[foo*=a] {a:b;}',
 			});
-			assert.equal(out, '[foo*=a]{}');
+			assert.equal(out, '[foo*=a]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo*=c] {}',
+				css:	'[foo*=c] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -127,15 +127,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo^=b] {}',
+				css:	'[foo^=b] {a:b;}',
 			});
-			assert.equal(out, '[foo^=b]{}');
+			assert.equal(out, '[foo^=b]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo^=c] {}',
+				css:	'[foo^=c] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -145,15 +145,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo$=r] {}',
+				css:	'[foo$=r] {a:b;}',
 			});
-			assert.equal(out, '[foo$=r]{}');
+			assert.equal(out, '[foo$=r]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo$=z] {}',
+				css:	'[foo$=z] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -163,31 +163,31 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'[foo~=bar] {}',
+				css:	'[foo~=bar] {a:b;}',
 			});
-			assert.equal(out, '[foo~=bar]{}');
+			assert.equal(out, '[foo~=bar]{a:b;}');
 		});
 
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar baz"></div>',
-				css:	'[foo~=bar] {}',
+				css:	'[foo~=bar] {a:b;}',
 			});
-			assert.equal(out, '[foo~=bar]{}');
+			assert.equal(out, '[foo~=bar]{a:b;}');
 		});
 
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="baz bar"></div>',
-				css:	'[foo~=bar] {}',
+				css:	'[foo~=bar] {a:b;}',
 			});
-			assert.equal(out, '[foo~=bar]{}');
+			assert.equal(out, '[foo~=bar]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar-baz"></div>',
-				css:	'[foo~=bar] {}',
+				css:	'[foo~=bar] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -195,7 +195,7 @@ describe('Context-free, unary selector', () => {
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="baz-bar"></div>',
-				css:	'[foo~=bar] {}',
+				css:	'[foo~=bar] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -205,15 +205,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div></div>',
-				css:	':not(span) {}',
+				css:	':not(span) {a:b;}',
 			});
-			assert.equal(out, ':not(span){}')
+			assert.equal(out, ':not(span){a:b;}')
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div></div>',
-				css:	':not(div) {}',
+				css:	':not(div) {a:b;}',
 			});
 			assert.equal(out, '');;
 		});
@@ -223,15 +223,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div id="a"></div>',
-				css:	':not(#b) {}',
+				css:	':not(#b) {a:b;}',
 			});
-			assert.equal(out, ':not(#b){}');
+			assert.equal(out, ':not(#b){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div id="a"></div>',
-				css:	':not(#a) {}',
+				css:	':not(#a) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -241,15 +241,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a"></div>',
-				css:	':not(.b) {}',
+				css:	':not(.b) {a:b;}',
 			});
-			assert.equal(out, ':not(.b){}');
+			assert.equal(out, ':not(.b){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a"></div>',
-				css:	':not(.a) {}',
+				css:	':not(.a) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -259,15 +259,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	':not([bar]) {}',
+				css:	':not([bar]) {a:b;}',
 			});
-			assert.equal(out, ':not([bar]){}');
+			assert.equal(out, ':not([bar]){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	':not([foo]) {}',
+				css:	':not([foo]) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -278,15 +278,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo=cow]) {}',
+				css:	':not([foo=cow]) {a:b;}',
 			});
-			assert.equal(out, ':not([foo=cow]){}');
+			assert.equal(out, ':not([foo=cow]){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo=bar]) {}',
+				css:	':not([foo=bar]) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -296,15 +296,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo*=c]) {}',
+				css:	':not([foo*=c]) {a:b;}',
 			});
-			assert.equal(out, ':not([foo*=c]){}');
+			assert.equal(out, ':not([foo*=c]){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo*=a]) {}',
+				css:	':not([foo*=a]) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -314,15 +314,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo^=c]) {}',
+				css:	':not([foo^=c]) {a:b;}',
 			});
-			assert.equal(out, ':not([foo^=c]){}');
+			assert.equal(out, ':not([foo^=c]){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo^=b]) {}',
+				css:	':not([foo^=b]) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -332,15 +332,15 @@ describe('Context-free, unary selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo$=z]) {}',
+				css:	':not([foo$=z]) {a:b;}',
 			});
-			assert.equal(out, ':not([foo$=z]){}');
+			assert.equal(out, ':not([foo$=z]){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	':not([foo$=r]) {}',
+				css:	':not([foo$=r]) {a:b;}',
 			});
 			assert.equal(out, '');
 		});

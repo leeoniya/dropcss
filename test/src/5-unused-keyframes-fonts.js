@@ -113,7 +113,7 @@ describe('Unused @keyframes and @font-face', () => {
 				html:	'<div></div>',
 				css:	prepend + css,
 			});
-			assert.equal(out, prepend + "div{color: red;}:root{}");
+			assert.equal(out, prepend + "div{color: red;}");
 		});
 
 		it('should retain if used in font-family:', function() {
@@ -151,7 +151,7 @@ describe('Unused @keyframes and @font-face', () => {
 				html:	'<div></div>',
 				css:	css2,
 			});
-			assert.equal(out, ":root{}");
+			assert.equal(out, "");
 		});
 	});
 });

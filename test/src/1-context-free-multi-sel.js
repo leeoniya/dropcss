@@ -8,15 +8,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="foo"></div>',
-				css:	'div.foo {}',
+				css:	'div.foo {a:b;}',
 			});
-			assert.equal(out, 'div.foo{}');
+			assert.equal(out, 'div.foo{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<i class="foo"></i>',
-				css:	'div.foo {}',
+				css:	'div.foo {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -26,15 +26,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div id="a"></div>',
-				css:	'div#a {}',
+				css:	'div#a {a:b;}',
 			});
-			assert.equal(out, 'div#a{}');
+			assert.equal(out, 'div#a{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<i id="a"></i>',
-				css:	'div#a {}',
+				css:	'div#a {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -44,15 +44,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a b"></div>',
-				css:	'.b.a {}',
+				css:	'.b.a {a:b;}',
 			});
-			assert.equal(out, '.b.a{}');
+			assert.equal(out, '.b.a{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a z"></div>',
-				css:	'.b.a {}',
+				css:	'.b.a {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -62,15 +62,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a" id="foo"></div>',
-				css:	'#foo.a {}',
+				css:	'#foo.a {a:b;}',
 			});
-			assert.equal(out, '#foo.a{}');
+			assert.equal(out, '#foo.a{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="a"></div>',
-				css:	'#foo.a {}',
+				css:	'#foo.a {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -80,15 +80,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	'div[foo] {}',
+				css:	'div[foo] {a:b;}',
 			});
-			assert.equal(out, 'div[foo]{}');
+			assert.equal(out, 'div[foo]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo></div>',
-				css:	'i[foo] {}',
+				css:	'i[foo] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -99,15 +99,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="z" foo="bar"></div>',
-				css:	'.z[foo=bar] {}',
+				css:	'.z[foo=bar] {a:b;}',
 			});
-			assert.equal(out, '.z[foo=bar]{}');
+			assert.equal(out, '.z[foo=bar]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'.z[foo=bar] {}',
+				css:	'.z[foo=bar] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -117,15 +117,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar" moo="cow"></div>',
-				css:	'[foo*=a][moo*=w] {}',
+				css:	'[foo*=a][moo*=w] {a:b;}',
 			});
-			assert.equal(out, '[foo*=a][moo*=w]{}');
+			assert.equal(out, '[foo*=a][moo*=w]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar" moo="cow"></div>',
-				css:	'[foo*=a][baz*=w] {}',
+				css:	'[foo*=a][baz*=w] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -135,15 +135,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="z" foo="bar"></div>',
-				css:	'.z[foo^=b] {}',
+				css:	'.z[foo^=b] {a:b;}',
 			});
-			assert.equal(out, '.z[foo^=b]{}');
+			assert.equal(out, '.z[foo^=b]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="z" foo="bar"></div>',
-				css:	'[foo^=c] {}',
+				css:	'[foo^=c] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -153,15 +153,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'div[foo$=r] {}',
+				css:	'div[foo$=r] {a:b;}',
 			});
-			assert.equal(out, 'div[foo$=r]{}');
+			assert.equal(out, 'div[foo$=r]{a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div foo="bar"></div>',
-				css:	'div[foo$=z] {}',
+				css:	'div[foo$=z] {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -171,15 +171,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="bar"></div>',
-				css:	'div:not(.foo) {}',
+				css:	'div:not(.foo) {a:b;}',
 			});
-			assert.equal(out, 'div:not(.foo){}');
+			assert.equal(out, 'div:not(.foo){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div class="foo"></div><i></i>',
-				css:	'div:not(.foo) {}',
+				css:	'div:not(.foo) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -187,7 +187,7 @@ describe('Context-free, multi selector', () => {
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<i></i>',
-				css:	'div:not(.foo) {}',
+				css:	'div:not(.foo) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
@@ -197,15 +197,15 @@ describe('Context-free, multi selector', () => {
 		it('should retain present', function() {
 			let {css: out} = dropcss({
 				html:	'<div><p></p><p></p><p></p><p></p></div>',
-				css:	'p:not(:nth-child(n+3)) {}',
+				css:	'p:not(:nth-child(n+3)) {a:b;}',
 			});
-			assert.equal(out, 'p:not(:nth-child(n+3)){}');
+			assert.equal(out, 'p:not(:nth-child(n+3)){a:b;}');
 		});
 
 		it('should drop absent', function() {
 			let {css: out} = dropcss({
 				html:	'<div><i></i><i></i><p></p><p></p></div>',
-				css:	'p:not(:nth-child(n+3)) {}',
+				css:	'p:not(:nth-child(n+3)) {a:b;}',
 			});
 			assert.equal(out, '');
 		});
