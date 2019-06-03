@@ -18,7 +18,7 @@ function removeBackwards(css, defs, used, shouldDrop, type) {
 	return css;
 }
 
-const CUSTOM_PROP_DEF = /(--[\w-]+)\s*:\s*([^;}]+);?\s*/gm;
+const CUSTOM_PROP_DEF = /([{};])\s*(--[\w-]+)\s*:\s*([^;}]+);?\s*/gm;
 const CUSTOM_PROP_USE = /var\(([\w-]+)\)/gm;
 const COMMA_SPACED = /\s*,\s*/gm;
 
@@ -29,7 +29,7 @@ function resolveCustomProps(css) {
 	while (CUSTOM_PROP_USE.test(css)) {
 		// get all defs
 		while (m = CUSTOM_PROP_DEF.exec(css))
-			defs[m[1]] = m[2];
+			defs[m[2]] = m[3];
 
 		// replace any non-composites
 		css = css.replace(CUSTOM_PROP_USE, (m0, m1) => !CUSTOM_PROP_USE.test(defs[m1]) ? defs[m1] : m0);
@@ -125,7 +125,7 @@ function dropCssVars(css, shouldDrop) {
 
 	do {
 		css = css2;
-		css2 = css.replace(CUSTOM_PROP_DEF, (m, m1) => css.indexOf('var(' + m1 + ')') != -1 ? m : '');
+		css2 = css.replace(CUSTOM_PROP_DEF, (m, m1, m2) => css.indexOf('var(' + m2 + ')') != -1 ? m : m1);
 	} while (css2 != css);
 
 	return css2;
@@ -137,7 +137,7 @@ function postProc(out, shouldDrop, log, START) {
 	// this is used for testing for "used" keyframes and fonts and
 	// parsing resolved 'font-family:' names from @font-face defs,
 	// so does not need to be regenerated during iterative purging
-	let flatCss = resolveCustomProps(out).replace(CUSTOM_PROP_DEF, '');
+	let flatCss = resolveCustomProps(out).replace(CUSTOM_PROP_DEF, (m, m1) => m1);
 
 	out = dropKeyFrames(out, flatCss, shouldDrop);
 

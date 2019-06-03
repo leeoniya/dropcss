@@ -154,4 +154,16 @@ describe('Unused @keyframes and @font-face', () => {
 			assert.equal(out, "");
 		});
 	});
+
+	describe('custom props', () => {
+		it('should not confuse BEM -- classes with custom props', function() {
+			let css = ":root{--red: #f00;}.a--b:hover{color: var(--red);}.--c{width: 10px;}";
+
+			let {css: out} = dropcss({
+				html:	'<div class="a--b"></div><div class="--c"></div>',
+				css:	css,
+			});
+			assert.equal(out, css);
+		});
+	});
 });
