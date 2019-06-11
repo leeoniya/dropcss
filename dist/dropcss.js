@@ -941,7 +941,7 @@
 
 		out = dropFontFaces(out, flatCss, shouldDrop);
 
-		out = dropCssVars(out, shouldDrop);
+		out = dropCssVars(out);
 
 		// kill any leftover empty blocks e.g. :root {}
 		return out.replace(/[^{}]+\{\s*\}/gm, '');
@@ -962,7 +962,6 @@
 	var drop = function (sel) { return true; };
 
 	function dropcss(opts) {
-		var log, START;
 
 		// {nodes, tag, class, id}
 		var H = _export_parse_(opts.html, !opts.keepText);
@@ -1069,7 +1068,7 @@
 
 		var out = generate(tokens, kept);
 
-		out = postProc$1(out, shouldDrop, log, START);
+		out = postProc$1(out, shouldDrop);
 
 		return {
 			css: stripEmptyAts(out),
