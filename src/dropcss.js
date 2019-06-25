@@ -13,7 +13,7 @@ const pseudoAssertable = /:(?:first|last|nth|only|not)\b/;		// |lang
 function stripNonAssertablePseudos(sel) {
 	// strip pseudo-elements and transient pseudo-classes
 	return sel.replace(/:?:[a-z-]+/gm, (m) =>
-		sel.startsWith('::') || !pseudoAssertable.test(m) ? '' : m
+		m.startsWith('::') || !pseudoAssertable.test(m) ? '' : m
 	)
 	// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
 	.replace(/:[a-z-]+\(\)/gm, '');
