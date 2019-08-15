@@ -9,7 +9,7 @@
   "dependencies": {
     "purgecss": "^1.3.0",
     "purify-css": "^1.2.5",
-    "uncss": "^0.16.2"
+    "uncss": "^0.17.0"
   },
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT"

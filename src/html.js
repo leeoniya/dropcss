@@ -10,15 +10,16 @@ const VOIDS = new Set("area base br col command embed hr img input keygen link m
 
 // doctype, comments, meta, style, link & script tags. TODO: CDATA
 const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
-const RE_ATTRS = /([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?/gm;
 const RE = {
-	TAG_HEAD: /\s*<([\w-]+)(?:\s*([^>]*))?>\s*/myi,
+	NAME: /\s*<([\w-]+)\s*/myi,
+	ATTR: /\s*([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?\s*/myi,
+	TAIL: /\s*(\/?>)\s*/myi,
 	TEXT: /\s*[^<]*/my,
-	TAG_CLOSE: /\s*<\/[\w-]+>\s*/myi,
+	CLOSE: /\s*<\/[\w-]+>\s*/myi,
 };
 
 function tokenize(html) {
-	let pos = 0, m, tokens = [];
+	let pos = 0, m, m2, tokens = [];
 
 	function syncPos(re) {
 		pos = re.lastIndex;
@@ -27,33 +28,38 @@ function tokenize(html) {
 	}
 
 	function next() {
-		m = RE.TAG_CLOSE.exec(html);
+		m = RE.CLOSE.exec(html);
 
 		if (m != null) {
-			syncPos(RE.TAG_CLOSE);
+			syncPos(RE.CLOSE);
 			tokens.push(TAG_CLOSE);
 			return;
 		}
 
-		m = RE.TAG_HEAD.exec(html);
+		m = RE.NAME.exec(html);
 
 		if (m != null) {
-			syncPos(RE.TAG_HEAD);
+			syncPos(RE.NAME);
 			let tag = m[1];
 			tokens.push(TAG_OPEN, tag);
 
-			let attrs = m[2];
+			let attrMap;
 
-			if (attrs != null) {
-				let attrMap = new Map();
-				let m2;
-				while (m2 = RE_ATTRS.exec(attrs))
-					attrMap.set(m2[1], (m2[2] || m2[3] || m2[4] || '').trim());
-				tokens.push(ATTRS, attrMap);
+			while (m2 = RE.ATTR.exec(html)) {
+				syncPos(RE.ATTR);
+				attrMap = attrMap || new Map();
+				attrMap.set(m2[1], (m2[2] || m2[3] || m2[4] || '').trim());
 			}
 
-			if (VOIDS.has(tag) || attrs && attrs.endsWith("/"))
+			if (attrMap)
+				tokens.push(ATTRS, attrMap);
+
+			m2 = RE.TAIL.exec(html);
+
+			if (VOIDS.has(tag) || m2[1] == "/>")
 				tokens.push(TAG_CLOSE);
+
+			syncPos(RE.TAIL);
 
 			return;
 		}
