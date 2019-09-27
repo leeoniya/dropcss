@@ -27,7 +27,7 @@
 	var NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
 	var RE = {
 		NAME: /\s*<([\w-]+)\s*/myi,
-		ATTR: /\s*([\w-]+)(?:="([^"]*)"|='([^']*)'|=(\S+))?\s*/myi,
+		ATTR: /\s*([\w-]+)(?:="([^"]*)"|='([^']*)'|=([\w-]+))?\s*/myi,
 		TAIL: /\s*(\/?>)\s*/myi,
 		TEXT: /\s*[^<]*/my,
 		CLOSE: /\s*<\/[\w-]+>\s*/myi,
