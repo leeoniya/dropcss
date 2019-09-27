@@ -7,11 +7,8 @@
 * https://github.com/leeoniya/dropcss (v1.0.15)
 */
 
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, global.dropcss = factory());
-}(this, function () { 'use strict';
+var dropcss = (function () {
+	'use strict';
 
 	function parseErr(srcType, srcStr, pos) {
 		throw new Error(srcType + ' parser stopped here: "' + srcStr.substring(pos, pos + 100) + '"');
@@ -1084,4 +1081,4 @@
 
 	return dropcss;
 
-}));
+}());

@@ -24,21 +24,6 @@ export default [
 		input: './src/dropcss.js',
 		output: {
 			name: 'dropcss',
-			file: './dist/dropcss.js',
-			format: 'umd',
-			banner,
-		},
-		plugins: [
-			cjs({nested: true, cache: false}),
-			buble({
-				transforms: {stickyRegExp: false}
-			}),
-		]
-	},
-	{
-		input: './src/dropcss.js',
-		output: {
-			name: 'dropcss',
 			file: './dist/dropcss.cjs.js',
 			format: 'cjs',
 			banner,
@@ -54,8 +39,23 @@ export default [
 		input: './src/dropcss.js',
 		output: {
 			name: 'dropcss',
-			file: './dist/dropcss.min.js',
-			format: 'umd',
+			file: './dist/dropcss.iife.js',
+			format: 'iife',
+			banner,
+		},
+		plugins: [
+			cjs({nested: true, cache: false}),
+			buble({
+				transforms: {stickyRegExp: false}
+			}),
+		]
+	},
+	{
+		input: './src/dropcss.js',
+		output: {
+			name: 'dropcss',
+			file: './dist/dropcss.iife.min.js',
+			format: 'iife',
 			banner: "/*! " + urlVer + " */",
 		},
 		plugins: [
@@ -64,6 +64,16 @@ export default [
 				transforms: {stickyRegExp: false}
 			}),
 			terser({
+				compress: {
+					inline: 0,
+					passes: 2,
+					keep_fargs: false,
+					pure_getters: true,
+					unsafe: true,
+					unsafe_comps: true,
+					unsafe_math: true,
+					unsafe_undefined: true,
+				},
 				output: {
 					comments: /^!/
 				}

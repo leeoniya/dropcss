@@ -1,6 +1,6 @@
 ## 🗑 DropCSS
 
-An [exceptionally fast](#performance), thorough and tiny ([~10 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.min.js)) unused-CSS cleaner _(MIT Licensed)_
+An [exceptionally fast](#performance), thorough and tiny ([~10 KB min](https://github.com/leeoniya/dropcss/tree/master/dist/dropcss.iife.min.js)) unused-CSS cleaner _(MIT Licensed)_
 
 ---
 ### Introduction

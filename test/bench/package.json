@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "purgecss": "^1.3.0",
+    "purgecss": "^1.4.0",
     "purify-css": "^1.2.5",
-    "uncss": "^0.17.0"
+    "uncss": "^0.17.2"
   },
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT"
