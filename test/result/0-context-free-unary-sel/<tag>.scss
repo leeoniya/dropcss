@@ -1,0 +1,27 @@
+html { content: '<div></div>' }
+
+// should retain present
+div {a:b;}
+
+/* expected */
+div{a:b;}
+/**/
+
+// should drop absent
+span {a:b;}
+
+/* expected */
+/**/
+
+// :not - should retain present
+:not(span) {a:b;}
+
+/* expected */
+:not(span){a:b;}
+/**/
+
+// :not - should drop absent
+:not(div) {a:b;}
+
+/* expected */
+/**/

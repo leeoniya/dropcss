@@ -1,0 +1,12 @@
+{
+  "env": {
+    "test-build": {
+      "import": {
+        "replacement": {
+          "from": "^((../)+)src/dropcss",
+          "to": "$1"
+        }
+      }
+    }
+  }
+}

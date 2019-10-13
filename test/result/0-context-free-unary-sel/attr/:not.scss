@@ -1,0 +1,74 @@
+// [attr]: should retain present
+html { content: '<div foo></div>' }
+:not([bar]) {a:b;}
+
+/* expected */
+:not([bar]){a:b;}
+/**/
+
+// [attr]: should drop absent
+html { content: '<div foo></div>' }
+:not([foo]){a:b;}
+
+/* expected */
+/**/
+
+// [attr=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+:not([foo=cow]) {a:b;}
+
+/* expected */
+:not([foo=cow]){a:b;}
+/**/
+
+// [attr=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+:not([foo=bar]){a:b;}
+
+/* expected */
+/**/
+
+// [attr*=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+:not([foo*=c]) {a:b;}
+
+/* expected */
+:not([foo*=c]){a:b;}
+/**/
+
+// [attr*=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+:not([foo*=a]){a:b;}
+
+/* expected */
+/**/
+
+// [attr^=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+:not([foo^=c]) {a:b;}
+
+/* expected */
+:not([foo^=c]){a:b;}
+/**/
+
+// [attr^=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+:not([foo^=b]){a:b;}
+
+/* expected */
+/**/
+
+// [attr$=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+:not([foo$=z]) {a:b;}
+
+/* expected */
+:not([foo$=z]){a:b;}
+/**/
+
+// [attr$=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+:not([foo$=r]) {a:b;}
+
+/* expected */
+/**/

@@ -1,0 +1,112 @@
+// [attr]: should retain present
+html { content: '<div foo></div>' }
+[foo] {a:b;}
+
+/* expected */
+[foo]{a:b;}
+/**/
+
+// [attr]: should drop absent
+html { content: '<div foo></div>' }
+[bar] {a:b;}
+
+/* expected */
+/**/
+
+// [attr=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+[foo=bar] {a:b;}
+
+/* expected */
+[foo=bar]{a:b;}
+/**/
+
+// [attr=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+[foo=cow] {a:b;}
+
+/* expected */
+/**/
+
+// [attr*=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+[foo*=a] {a:b;}
+
+/* expected */
+[foo*=a]{a:b;}
+/**/
+
+// [attr*=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+[foo*=c] {a:b;}
+
+/* expected */
+/**/
+
+// [attr^=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+[foo^=b] {a:b;}
+
+/* expected */
+[foo^=b]{a:b;}
+/**/
+
+// [attr^=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+[foo*=c] {a:b;}
+
+/* expected */
+/**/
+
+// [attr$=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+[foo$=r] {a:b;}
+
+/* expected */
+[foo$=r]{a:b;}
+/**/
+
+// [attr$=value]: should drop absent
+html { content: '<div foo="bar"></div>' }
+[foo$=z] {a:b;}
+
+/* expected */
+/**/
+
+// [attr~=value]: should retain present
+html { content: '<div foo="bar"></div>' }
+[foo~=bar] {a:b;}
+
+/* expected */
+[foo~=bar]{a:b;}
+/**/
+
+// [attr~=value]: should retain present (multiple first)
+html { content: '<div foo="bar baz"></div>' }
+[foo~=bar] {a:b;}
+
+/* expected */
+[foo~=bar]{a:b;}
+/**/
+
+// [attr~=value]: should retain present (multiple second)
+html { content: '<div foo="baz bar"></div>' }
+[foo~=bar] {a:b;}
+
+/* expected */
+[foo~=bar]{a:b;}
+/**/
+
+// [attr~=value]: should drop absent
+html { content: '<div foo="bar-baz"></div>' }
+[foo~=bar] {a:b;}
+
+/* expected */
+/**/
+
+// [attr~=value]: should drop absent (reverse)
+html { content: '<div foo="baz-bar"></div>' }
+[foo~=bar] {a:b;}
+
+/* expected */
+/**/

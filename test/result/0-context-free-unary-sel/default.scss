@@ -1,0 +1,7 @@
+// *: should retain present
+html { content: '<div></div>' }
+* {a:b;}
+
+/* expected */
+*{a:b;}
+/**/
