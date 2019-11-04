@@ -1,6 +1,6 @@
 {
   "name": "dropcss",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "An exceptionally fast, thorough and tiny unused-CSS cleaner",
   "main": "./dist/dropcss.cjs.js",
   "scripts": {
@@ -25,9 +25,9 @@
     "url": "https://github.com/leeoniya/dropcss/issues"
   },
   "devDependencies": {
-    "mocha": "^6.2.1",
+    "mocha": "^6.2.2",
     "nyc": "^14.1.1",
-    "rollup": "^1.23.1",
+    "rollup": "^1.26.3",
     "rollup-plugin-buble": "^0.19.8",
     "rollup-plugin-cjs-es": "^0.9.0",
     "rollup-plugin-terser": "^5.1.2"
