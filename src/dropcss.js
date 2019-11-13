@@ -36,7 +36,7 @@ function dropcss(opts) {
 
 	const shouldDrop = opts.shouldDrop || drop;
 
-	let tokens = parseCSS(opts.css);
+	let tokens = parseCSS(opts.css, opts.keepAlternate);
 
 	LOGGING && log.push([+new Date() - START, 'CSS tokenized']);
 

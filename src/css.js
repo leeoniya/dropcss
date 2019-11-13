@@ -2,7 +2,7 @@
 
 const { parseErr } = require('./err');
 
-const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
+const COMMENTS = /\s*\/\*([\s\S]*?)\*\/\s*/gm;
 const COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
 
 const START_AT = 1;
@@ -175,9 +175,12 @@ function tokenize(css) {
 	return tokens;
 }
 
-function parse(css) {
+function parse(css, keepAlternate) {
 	// strip comments (for now)
-	css = css.replace(COMMENTS, '');
+	css = css.replace(COMMENTS, keepAlternate ? (m, comment) => {
+		if (/^\s*@alternate\s*$/.test(comment)) return m
+		return ''
+	}: '');
 	return tokenize(css);
 }
 
