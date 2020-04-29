@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2019, Leon Sorokin
+* Copyright (c) 2020, Leon Sorokin
 * All rights reserved. (MIT Licensed)
 *
 * dropcss.js (DropCSS)
