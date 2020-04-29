@@ -19,7 +19,7 @@ function stripNonAssertablePseudos(sel) {
 	.replace(/:[a-z-]+\(\)/gm, '');
 }
 
-const drop = sel => true;
+const retTrue = sel => true;
 
 function dropcss(opts) {
 	let log, START;
@@ -34,7 +34,8 @@ function dropcss(opts) {
 
 	LOGGING && log.push([+new Date() - START, 'HTML parsed & processed']);
 
-	const shouldDrop = opts.shouldDrop || drop;
+	const shouldDrop = opts.shouldDrop || retTrue;
+	const didRetain  = opts.didRetain  || retTrue;
 
 	let tokens = parseCSS(opts.css);
 
@@ -138,9 +139,7 @@ function dropcss(opts) {
 
 	LOGGING && log.push([+new Date() - START, 'Context-aware second pass']);
 
-	let kept = new Set();
-
-	let out = generateCSS(tokens, kept);
+	let out = generateCSS(tokens, didRetain);
 
 	LOGGING && log.push([+new Date() - START, 'Generate output']);
 
@@ -150,7 +149,6 @@ function dropcss(opts) {
 
 	return {
 		css: stripEmptyAts(out),
-		sels: kept,
 	};
 }
 

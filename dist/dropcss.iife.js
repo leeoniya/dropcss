@@ -389,7 +389,7 @@ var dropcss = (function () {
 		return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
 	}
 
-	function generate(tokens, kept) {
+	function generate(tokens, didRetain) {
 		var out = '', lastSelsLen = 0;
 
 		for (var i = 0; i < tokens.length; i++) {
@@ -401,7 +401,7 @@ var dropcss = (function () {
 					lastSelsLen = sels.length;
 
 					if (lastSelsLen > 0) {
-						sels.forEach(function (s) { return kept.add(s); });
+						sels.forEach(didRetain);
 						out += sels.join();
 					}
 					break;
@@ -962,14 +962,15 @@ var dropcss = (function () {
 		.replace(/:[a-z-]+\(\)/gm, '');
 	}
 
-	var drop = function (sel) { return true; };
+	var retTrue = function (sel) { return true; };
 
 	function dropcss(opts) {
 
 		// {nodes, tag, class, id}
 		var H = _export_parse_(opts.html, !opts.keepText);
 
-		var shouldDrop = opts.shouldDrop || drop;
+		var shouldDrop = opts.shouldDrop || retTrue;
+		var didRetain  = opts.didRetain  || retTrue;
 
 		var tokens = parse(opts.css);
 
@@ -1067,15 +1068,12 @@ var dropcss = (function () {
 			}
 		}
 
-		var kept = new Set();
-
-		var out = generate(tokens, kept);
+		var out = generate(tokens, didRetain);
 
 		out = postProc$1(out, shouldDrop);
 
 		return {
 			css: stripEmptyAts(out),
-			sels: kept,
 		};
 	}
 

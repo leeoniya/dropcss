@@ -185,7 +185,7 @@ function stripEmptyAts(css) {
 	return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
 }
 
-function generate(tokens, kept) {
+function generate(tokens, didRetain) {
 	let out = '', lastSelsLen = 0;
 
 	for (let i = 0; i < tokens.length; i++) {
@@ -197,7 +197,7 @@ function generate(tokens, kept) {
 				lastSelsLen = sels.length;
 
 				if (lastSelsLen > 0) {
-					sels.forEach(s => kept.add(s));
+					sels.forEach(didRetain);
 					out += sels.join();
 				}
 				break;

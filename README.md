@@ -286,21 +286,21 @@ let htmlB = `
 // whitelist
 let whitelist = new Set();
 
+function didRetain(sel) {
+    whitelist.add(sel);
+}
+
 let resA = dropcss({
     css,
     html: htmlA,
+    didRetain,
 });
-
-// accumulate retained A selectors
-resA.sels.forEach(sel => whitelist.add(sel));
 
 let resB = dropcss({
     css,
     html: htmlB,
+    didRetain,
 });
-
-// accumulate retained B selectors
-resB.sels.forEach(sel => whitelist.add(sel));
 
 // final purge relying only on accumulated whitelist
 let cleaned = dropcss({
