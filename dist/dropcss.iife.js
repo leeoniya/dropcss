@@ -21,7 +21,7 @@ var dropcss = (function () {
 	const VOIDS = new Set("area base br col command embed hr img input keygen link meta param source track wbr".split(" "));
 
 	// doctype, comments, meta, style, link & script tags. TODO: CDATA
-	const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link[^>]*>|<meta[^>]*>/gmi;
+	const NASTIES = /<!doctype[^>]*>|<!--[\s\S]*?-->|<script[^>]*>[\s\S]*?<\/script>|<style[^>]*>[\s\S]*?<\/style>|<link\s+[^>]*>|<meta\s+[^>]*>/gmi;
 	const RE = {
 		NAME: /\s*<([\w-]+)\s*/myi,
 		ATTR: /\s*([\w-:]+)(?:="([^"]*)"|='([^']*)'|=([\w-]+))?\s*/myi,
