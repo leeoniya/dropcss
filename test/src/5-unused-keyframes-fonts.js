@@ -1,4 +1,4 @@
-const dropcss = require('../../src/dropcss.js');
+const dropcss = require('../../dist/dropcss.cjs.js');
 const assert = require('assert');
 
 describe('Unused @keyframes and @font-face', () => {

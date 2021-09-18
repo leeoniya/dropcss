@@ -1,13 +1,11 @@
-"use strict";
-
-const { parseErr } = require('./err');
+import { parseErr } from './err';
 
 const COMMENTS = /\s*\/\*[\s\S]*?\*\/\s*/gm;
 const COMBINATORS = /\s*[>~+.#]\s*|\[[^\]]+\]|\s+/gm;
 
 const START_AT = 1;
 const CLOSE_AT = 2;
-const SELECTORS = 3;
+export const SELECTORS = 3;
 const PROPERTIES = 4;
 const AT_CHUNK = 5;		// for @ blocks that should not be processed
 //const COMMENT;
@@ -56,7 +54,7 @@ function stripAllPseudos(sel) {
 }
 
 // pos must already be past opening @op
-function takeUntilMatchedClosing(css, pos, op, cl) {
+export function takeUntilMatchedClosing(css, pos, op, cl) {
 	let chunk = '';
 	let unclosed = 1;
 
@@ -175,17 +173,17 @@ function tokenize(css) {
 	return tokens;
 }
 
-function parse(css) {
+export function parse(css) {
 	// strip comments (for now)
 	css = css.replace(COMMENTS, '');
 	return tokenize(css);
 }
 
-function stripEmptyAts(css) {
+export function stripEmptyAts(css) {
 	return css.replace(/@[a-z-]+[^{]+\{\s*\}/gm, '');
 }
 
-function generate(tokens, didRetain) {
+export function generate(tokens, didRetain) {
 	let out = '', lastSelsLen = 0;
 
 	for (let i = 0; i < tokens.length; i++) {
@@ -220,9 +218,3 @@ function generate(tokens, didRetain) {
 	// strip leftover empty @ rules
 	return stripEmptyAts(out);
 }
-
-exports.parse = parse;
-exports.generate = generate;
-exports.SELECTORS = SELECTORS;
-exports.takeUntilMatchedClosing = takeUntilMatchedClosing;
-exports.stripEmptyAts = stripEmptyAts;

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const dropcss = require('../../src/dropcss.js');
+const dropcss = require('../../dist/dropcss.cjs.js');
 const assert = require('assert');
 
 const vkbeautify = require('../bench/lib/vkbeautify');

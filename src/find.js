@@ -1,14 +1,12 @@
-"use strict";
-
-const { nth: isNth } = require('./nth');
-const { getSibsOfType } = require('./html');
-const { parse: parseSel, parseNth } = require('./sel');
+import { nth as isNth } from './nth';
+import { getSibsOfType } from './html';
+import { parse as parseSel, parseNth } from './sel';
 
 function matchesType(el, name) {
 	return name == el.tagName || name == '*';
 }
 
-function matchesAttr(el, name, selVal, matcher) {
+export function matchesAttr(el, name, selVal, matcher) {
 	matcher = matcher || '=';
 
 	let attrs = el.attributes;
@@ -193,15 +191,13 @@ function find(m, ctx) {
 	return res;
 }
 
-function some(nodes, m) {
+function _some(nodes, m) {
 	return nodes.some(node => find(m, {
 		idx: m.length - 1,
 		node
 	}));
 }
 
-exports.matchesAttr = matchesAttr;
-
-exports.some = (nodes, sel) => {
-	return some(nodes, Array.isArray(sel) ? sel : parseSel(sel));
+export const some = (nodes, sel) => {
+	return _some(nodes, Array.isArray(sel) ? sel : parseSel(sel));
 };

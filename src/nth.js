@@ -1,5 +1,3 @@
-"use strict";
-
 // adapted from https://github.com/fb55/nth-check/blob/master/compile.js
 
 // https://css-tricks.com/how-nth-child-works/
@@ -27,7 +25,7 @@ function nthChild(el, a, b) {
 	tests if an element's pos (index+1) matches the given rule
 	highly optimized to return the fastest solution
 */
-function nth(a, b, pos) {
+export function nth(a, b, pos) {
 	//when b <= 0, a*n won't be possible for any matches when a < 0
 	//besides, the specification says that no element is matched when a and b are 0
 	if (b < 0 && a <= 0)
@@ -55,5 +53,3 @@ function nth(a, b, pos) {
 
 	return pos <= b && pos % a === bMod;
 }
-
-exports.nth = nth;

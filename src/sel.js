@@ -1,9 +1,7 @@
-"use strict";
-
-const { takeUntilMatchedClosing } = require('./css');
+import { takeUntilMatchedClosing } from './css';
 
 // assumes stripPseudos(sel); has already been called
-function parse(sel) {
+export function parse(sel) {
 	const RE = {
 		IDENT:	/([\w*-]+)/iy,
 		ATTR:	/([\w-]+)(?:(.?=)["']?([^\]]*?)["']?)?\]/iy,
@@ -98,7 +96,7 @@ function parse(sel) {
 
 const RE_NTH = /^([+-]?\d*)?n([+-]\d+)?$/;
 
-function parseNth(expr) {
+export function parseNth(expr) {
 	let m = RE_NTH.exec(expr);
 
 	if (m != null) {
@@ -122,6 +120,3 @@ function parseNth(expr) {
 
 	return [0, 0];
 }
-
-exports.parse = parse;
-exports.parseNth = parseNth;

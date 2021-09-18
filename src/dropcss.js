@@ -1,10 +1,8 @@
-"use strict";
-
-const { parse: parseHTML } = require('./html');
-const { parse: parseCSS, generate: generateCSS, SELECTORS, stripEmptyAts } = require('./css');
-const { some, matchesAttr } = require('./find');
-const { postProc } = require('./postproc');
-const { LOGGING } = require('./env');
+import { parse as parseHTML } from './html';
+import { parse as parseCSS, generate as generateCSS, SELECTORS, stripEmptyAts } from './css';
+import { some, matchesAttr } from './find';
+import { postProc } from './postproc';
+import { LOGGING } from './env';
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
@@ -21,7 +19,7 @@ function stripNonAssertablePseudos(sel) {
 
 const retTrue = sel => true;
 
-function dropcss(opts) {
+export default function dropcss(opts) {
 	let log, START;
 
 	if (LOGGING) {
@@ -151,5 +149,3 @@ function dropcss(opts) {
 		css: stripEmptyAts(out),
 	};
 }
-
-module.exports = dropcss;

@@ -1,1 +1,1 @@
-exports.LOGGING = false;
+export const LOGGING = false;

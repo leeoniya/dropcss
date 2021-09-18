@@ -1,6 +1,4 @@
-"use strict";
-
-const { parseErr } = require('./err');
+import { parseErr } from './err';
 
 const TAG_OPEN = 1;
 const ATTRS = 2;
@@ -103,7 +101,7 @@ const EMPTY_ARR = [];
 
 // adds ._ofTypes: {<tagName>: [...]} to parent
 // adds ._typeIdx to childNodes
-function getSibsOfType(par, tagName) {
+export function getSibsOfType(par, tagName) {
 	if (par != null) {
 		let ofTypes = (par._ofTypes = par._ofTypes || {});
 
@@ -178,9 +176,7 @@ function postProc(node, idx, ctx) {
 	ctx.nodes.push(node);
 }
 
-exports.getSibsOfType = getSibsOfType;
-
-exports.parse = html => {
+export const parse = html => {
 	html = html.replace(NASTIES, '');
 
 	let tokens = tokenize(html);

@@ -1,5 +1,5 @@
-const { LOGGING } = require('./env');
-const { takeUntilMatchedClosing } = require('./css');
+import { LOGGING } from './env';
+import { takeUntilMatchedClosing } from './css';
 
 function splice(str, index, count, add) {
 	return str.slice(0, index) + add + str.slice(index + count);
@@ -131,7 +131,7 @@ function dropCssVars(css, shouldDrop) {
 	return css2;
 }
 
-function postProc(out, shouldDrop, log, START) {
+export function postProc(out, shouldDrop, log, START) {
 	// flatten & remove custom props to ensure no accidental
 	// collisions for regexes, e.g. --animation-name: --font-face:
 	// this is used for testing for "used" keyframes and fonts and
@@ -154,5 +154,3 @@ function postProc(out, shouldDrop, log, START) {
 	// kill any leftover empty blocks e.g. :root {}
 	return out.replace(/[^{}]+\{\s*\}/gm, '');
 }
-
-exports.postProc = postProc;
