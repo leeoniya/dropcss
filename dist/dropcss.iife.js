@@ -965,13 +965,13 @@ var dropcss = (function () {
 
 	const pseudoNonAssertableParenth = /:(?:lang)\([^)]*\)/g;
 
+	// strips pseudo-elements and transient pseudo-classes
 	function stripNonAssertablePseudos(sel) {
-		// strip pseudo-elements and transient pseudo-classes
 		return sel
-		.replace(pseudoNonAssertableParenth, '')
-		.replace(/:?:[a-z-]+/gm, (m) => m.startsWith('::') || !pseudoAssertable.test(m) ? '' : m)
-		// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
-		.replace(/:[a-z-]+\(\)/gm, '');
+			.replace(pseudoNonAssertableParenth, '')
+			.replace(/:?:[a-z-]+/gm, (m) => m.startsWith('::') || !pseudoAssertable.test(m) ? '' : m)
+			// remove any empty leftovers eg :not() - [tabindex="-1"]:focus:not(:focus-visible)
+			.replace(/:[a-z-]+\(\)/gm, '');
 	}
 
 	const retTrue = sel => true;
