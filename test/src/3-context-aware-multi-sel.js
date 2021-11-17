@@ -134,4 +134,14 @@ describe('Context-aware, multi selector', () => {
 			assert.equal(out, '');
 		});
 	});
+
+	describe('a:lang(ar)', () => {
+		it('should handle unsupported pseudo in selector parser', function() {
+			let {css: out} = dropcss({
+				html:	'<a></a>',
+				css:	"a:lang(ar){color:red;}",
+			});
+			assert.equal(out, "a:lang(ar){color:red;}");
+		});
+	});
 });
