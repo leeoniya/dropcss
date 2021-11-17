@@ -569,8 +569,16 @@ function parse(sel) {
 		return matched;
 	}
 
-	while (idx < sel.length)
+	let prevPos = idx;
+
+	while (idx < sel.length) {
 		next();
+
+		if (prevPos === idx)
+			parseErr('sel', sel, idx);
+
+		prevPos = idx;
+	}
 
 	return toks;
 }

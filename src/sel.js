@@ -1,4 +1,5 @@
 import { takeUntilMatchedClosing } from './css';
+import { parseErr } from './err';
 
 // assumes stripPseudos(sel); has already been called
 export function parse(sel) {
@@ -88,8 +89,16 @@ export function parse(sel) {
 		return matched;
 	}
 
-	while (idx < sel.length)
+	let prevPos = idx;
+
+	while (idx < sel.length) {
 		next();
+
+		if (prevPos === idx)
+			parseErr('sel', sel, idx);
+
+		prevPos = idx;
+	}
 
 	return toks;
 }
