@@ -211,6 +211,50 @@ describe('Context-free, multi selector', () => {
 		});
 	});
 
+	describe('<tag>:is(.class)', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div class="bar"></div>',
+				css:	'div:is(.bar) {a:b;}',
+			});
+			assert.equal(out, 'div:is(.bar){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div class="foo"></div><i></i>',
+				css:	'div:is(.bar) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<i></i>',
+				css:	'div:is(.foo) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe('<tag>:not(:nth-child(n+3))', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div><p></p><p></p><p></p><p></p></div>',
+				css:	'p:is(:nth-child(n+3)) {a:b;}',
+			});
+			assert.equal(out, 'p:is(:nth-child(n+3)){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div><i></i><i></i><p></p><p></p></div>',
+				css:	'p:is(:nth-child(n+5)) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
 	// TODO: rest that match the non-:not() versions
 
 	// *-child assertions dont make to test in a unary selector since all root elements will be first/last/only "children"

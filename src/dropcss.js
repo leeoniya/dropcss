@@ -6,7 +6,7 @@ import { LOGGING } from './env';
 
 const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
-const pseudoAssertable = /:(?:first|last|nth|only|not)\b/;
+const pseudoAssertable = /:(?:first|last|nth|only|not|is)\b/;
 
 const pseudoNonAssertableParenth = /:(?:lang)\([^)]*\)/g;
 

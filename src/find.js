@@ -99,6 +99,9 @@ function find(m, ctx) {
 					case 'not':
 						res = !find(val, {node: ctx.node, idx: val.length - 1});
 						break;
+					case 'is':
+						res = find(val, {node: ctx.node, idx: val.length - 1});
+						break;
 					case 'first-child':
 						res = tidx == 0;
 						break;

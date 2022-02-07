@@ -346,5 +346,150 @@ describe('Context-free, unary selector', () => {
 		});
 	});
 
+	describe(':is(<tag>)', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	':is(div) {a:b;}',
+			});
+			assert.equal(out, ':is(div){a:b;}')
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div></div>',
+				css:	':is(span) {a:b;}',
+			});
+			assert.equal(out, '');;
+		});
+	});
+
+	describe(':is(#id)', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div id="a"></div>',
+				css:	':is(#a) {a:b;}',
+			});
+			assert.equal(out, ':is(#a){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div id="a"></div>',
+				css:	':is(#b) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe(':is(.class)', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div class="a"></div>',
+				css:	':is(.a) {a:b;}',
+			});
+			assert.equal(out, ':is(.a){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div class="a"></div>',
+				css:	':is(.b) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe(':is([attr])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo></div>',
+				css:	':is([foo]) {a:b;}',
+			});
+			assert.equal(out, ':is([foo]){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo></div>',
+				css:	':is([bar]) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	// todo: test [foo="val"], [foo='val']
+	describe(':is([attr=value])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo=bar]) {a:b;}',
+			});
+			assert.equal(out, ':is([foo=bar]){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo=cow]) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe(':is([attr*=value])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo*=a]) {a:b;}',
+			});
+			assert.equal(out, ':is([foo*=a]){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo*=c]) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe(':is([attr^=value])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo^=b]) {a:b;}',
+			});
+			assert.equal(out, ':is([foo^=b]){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo^=c]) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
+	describe(':is([attr$=value])', () => {
+		it('should retain present', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo$=r]) {a:b;}',
+			});
+			assert.equal(out, ':is([foo$=r]){a:b;}');
+		});
+
+		it('should drop absent', function() {
+			let {css: out} = dropcss({
+				html:	'<div foo="bar"></div>',
+				css:	':is([foo$=z]) {a:b;}',
+			});
+			assert.equal(out, '');
+		});
+	});
+
 	// *-child assertions dont make to test in a unary selector since all root elements will be first/last/only "children"
 });

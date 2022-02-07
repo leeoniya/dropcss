@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2021, Leon Sorokin
+* Copyright (c) 2022, Leon Sorokin
 * All rights reserved. (MIT Licensed)
 *
 * dropcss.js (DropCSS)
@@ -482,6 +482,8 @@ var dropcss = (function () {
 		return pos <= b && pos % a === bMod;
 	}
 
+	const pseudoClasses = /not|is/;
+
 	// assumes stripPseudos(sel); has already been called
 	function parse(sel) {
 		const RE = {
@@ -531,7 +533,7 @@ var dropcss = (function () {
 					if (m[2] == '(') {
 						let subsel = takeUntilMatchedClosing(sel, RE.PSEUDO.lastIndex, '(', ')');
 						RE.PSEUDO.lastIndex += subsel.length + 1;
-						m[2] = m[1] == 'not' ? parse(subsel) : subsel;
+						m[2] = pseudoClasses.test(m[1]) ? parse(subsel) : subsel;
 					}
 
 					toks.splice(
@@ -707,6 +709,9 @@ var dropcss = (function () {
 					switch (name) {
 						case 'not':
 							res = !find(val, {node: ctx.node, idx: val.length - 1});
+							break;
+						case 'is':
+							res = find(val, {node: ctx.node, idx: val.length - 1});
 							break;
 						case 'first-child':
 							res = tidx == 0;
@@ -961,7 +966,7 @@ var dropcss = (function () {
 
 	const ATTRIBUTES = /\[([\w-]+)(?:(.?=)"?([^\]]*?)"?)?\]/i;
 
-	const pseudoAssertable = /:(?:first|last|nth|only|not)\b/;
+	const pseudoAssertable = /:(?:first|last|nth|only|not|is)\b/;
 
 	const pseudoNonAssertableParenth = /:(?:lang)\([^)]*\)/g;
 
@@ -1091,4 +1096,4 @@ var dropcss = (function () {
 
 	return dropcss;
 
-}());
+})();
