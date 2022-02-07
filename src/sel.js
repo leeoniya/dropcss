@@ -1,6 +1,8 @@
 import { takeUntilMatchedClosing } from './css';
 import { parseErr } from './err';
 
+const pseudoClasses = /not|is/
+
 // assumes stripPseudos(sel); has already been called
 export function parse(sel) {
 	const RE = {
@@ -50,7 +52,7 @@ export function parse(sel) {
 				if (m[2] == '(') {
 					let subsel = takeUntilMatchedClosing(sel, RE.PSEUDO.lastIndex, '(', ')');
 					RE.PSEUDO.lastIndex += subsel.length + 1;
-					m[2] = m[1] == 'not' ? parse(subsel) : subsel;
+					m[2] = pseudoClasses.test(m[1]) ? parse(subsel) : subsel;
 				}
 
 				toks.splice(
