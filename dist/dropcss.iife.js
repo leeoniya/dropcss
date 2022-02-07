@@ -708,11 +708,9 @@ var dropcss = (function () {
 
 					switch (name) {
 						case 'not':
-							debugger
 							res = !find(val, {node: ctx.node, idx: val.length - 1});
 							break;
 						case 'is':
-							debugger
 							res = find(val, {node: ctx.node, idx: val.length - 1});
 							break;
 						case 'first-child':
@@ -1078,7 +1076,7 @@ var dropcss = (function () {
 
 						if (cleaned in tested)
 							return tested[cleaned];
-	debugger
+
 						return tested[cleaned] = (some(H.nodes, cleaned) || shouldDrop(s) !== true);
 					}
 

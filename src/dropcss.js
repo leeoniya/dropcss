@@ -128,7 +128,7 @@ export default function dropcss(opts) {
 
 					if (cleaned in tested)
 						return tested[cleaned];
-debugger
+
 					return tested[cleaned] = (some(H.nodes, cleaned) || shouldDrop(s) !== true);
 				}
 
