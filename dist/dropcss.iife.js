@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2021, Leon Sorokin
+* Copyright (c) 2023, Leon Sorokin
 * All rights reserved. (MIT Licensed)
 *
 * dropcss.js (DropCSS)
@@ -1091,4 +1091,4 @@ var dropcss = (function () {
 
 	return dropcss;
 
-}());
+})();
