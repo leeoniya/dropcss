@@ -12,6 +12,7 @@
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT",
   "files": [
+    "./src/types.d.ts",
     "package.json",
     "README.md",
     "LICENSE",
