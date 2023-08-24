@@ -3,6 +3,7 @@
   "version": "1.0.16",
   "description": "An exceptionally fast, thorough and tiny unused-CSS cleaner",
   "main": "./dist/dropcss.cjs.js",
+  "types": "./src/types.d.ts",
   "scripts": {
     "build": "rollup -c",
     "test": "nyc mocha test/src/*.js",
@@ -11,6 +12,7 @@
   "author": "Leon Sorokin <leeoniya@gmail.com>",
   "license": "MIT",
   "files": [
+    "./src/types.d.ts",
     "package.json",
     "README.md",
     "LICENSE",
